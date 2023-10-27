@@ -17,18 +17,19 @@
     <button onclick="toggleLanguage()">Change Language</button>
 
     <script>
-        function toggleLanguage() {
-            var englishElements = document.querySelectorAll('[id^="english-"]');
-            var portugueseElements = document.querySelectorAll('[id^="portuguese-"]');
-            
-            for (var i = 0; i < englishElements.length; i++) {
-                englishElements[i].style.display = (englishElements[i].style.display === 'block') ? 'none' : 'block';
-            }
-            
-            for (var i = 0; i < portugueseElements.length; i++) {
-                portugueseElements[i].style.display = (portugueseElements[i].style.display === 'block') ? 'none' : 'block';
-            }
+    function toggleLanguage() {
+        var englishElements = document.querySelectorAll('[id^="english-"]');
+        var portugueseElements = document.querySelectorAll('[id^="portuguese-"]');
+        
+        for (var i = 0; i < englishElements.length; i++) {
+            englishElements[i].style.display = 'none';
         }
-    </script>
+        
+        for (var i = 0; i < portugueseElements.length; i++) {
+            portugueseElements[i].style.display = 'block';
+        }
+    }
+</script>
+
 </body>
 </html>

@@ -48,7 +48,12 @@ h6 {
   height: 40px;
   border-radius: 50px;
   transition: all 0.4s;
+  margin-right: 25px; /* Afasta da margem direita */
+  margin-bottom: 25px; /* Afasta da margem direita */
+  transform: rotate(50deg); /* Rotação de 20 graus */
 }
+
+
 
 .back-to-top i {
   font-size: 28px;
@@ -204,6 +209,13 @@ h6 {
 .nav-menu li:hover>a i {
   color: #149ddd;
 }
+
+
+
+
+
+
+
 
 /* Mobile Navigation */
 .mobile-nav-toggle {

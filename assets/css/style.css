@@ -42,7 +42,7 @@ h6 {
   opacity: 0;
   right: 15px;
   bottom: 15px;
-  z-index: 996;
+  z-index: 1000;
   width: 40px;
   height: 40px;
   border-radius: 50px;
@@ -1115,3 +1115,74 @@ section {
     padding-right: 20px 15px;
   }
 }
+
+
+
+
+
+
+
+
+/* Adicione isso ao seu arquivo de estilo CSS ou em um bloco de estilo no cabeçalho */
+#vertical-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 60px; /* Largura da barra */
+  background-color: #007bff; /* Cor de fundo da barra */
+  z-index: 1000;
+}
+
+#vertical-nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+#vertical-nav li {
+  margin: 0;
+  padding: 10px;
+  text-align: center;
+}
+
+#vertical-nav a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+}
+
+#vertical-nav a:hover {
+  background-color: #0056b3; /* Cor de fundo ao passar o mouse */
+}
+
+
+
+
+
+
+/* Estilize a barra de navegação vertical */
+#vertical-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%; /* Defina a altura como 100% */
+  width: 100px; /* Largura da barra azul */
+  background-color: #007bff; /* Cor da barra azul */
+  transition: width 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#vertical-nav a {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+}
+
+#vertical-nav a.active {
+  background-color: #007bff; /* Cor de fundo do link ativo */
+  color: #fff; /* Cor do texto do link ativo */
+}
+

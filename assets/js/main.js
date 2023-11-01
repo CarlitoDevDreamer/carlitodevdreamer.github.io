@@ -260,3 +260,58 @@
   new PureCounter();
 
 })()
+
+
+
+
+
+
+
+
+
+
+// Atualize o JavaScript para lidar com a navegação entre as seções
+document.addEventListener("DOMContentLoaded", function () {
+  const sections = document.querySelectorAll("section");
+  const navLinks = document.querySelectorAll("#vertical-nav a");
+
+  // Função para rolar até a seção selecionada
+  function scrollToSection(sectionId) {
+      const section = document.querySelector(`[data-section="${sectionId}"]`);
+      if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+      }
+  }
+
+  // Atualize a seção ativa quando os links da barra de navegação são clicados
+  navLinks.forEach((link) => {
+      link.addEventListener("click", function (e) {
+          e.preventDefault();
+          const sectionId = this.getAttribute("data-section");
+          scrollToSection(sectionId);
+      });
+  });
+
+  // Função para verificar qual seção está visível
+  function updateActiveSection() {
+      const scrollPosition = window.scrollY;
+      sections.forEach((section) => {
+          const sectionId = section.getAttribute("data-section");
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.offsetHeight;
+          if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+              navLinks.forEach((link) => link.classList.remove("active"));
+              const activeLink = document.querySelector(`#vertical-nav a[data-section="${sectionId}"]`);
+              if (activeLink) {
+                  activeLink.classList.add("active");
+              }
+          }
+      });
+  }
+
+  // Adicione um ouvinte de rolagem para atualizar a seção ativa
+  window.addEventListener("scroll", updateActiveSection);
+
+  // Atualize a seção ativa quando a página for carregada
+  updateActiveSection();
+});

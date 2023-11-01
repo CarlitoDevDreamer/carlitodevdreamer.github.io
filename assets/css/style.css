@@ -1217,6 +1217,13 @@ section {
   padding: 20px 10px;
 }
 
+
+
+
+
+
+
+
 #vertical-nav ul {
   list-style: none;
   padding: 0;
@@ -1241,4 +1248,44 @@ section {
 
 
 
+
+/* Estilos para a barra de navegação vertical */
+#vertical-nav {
+  position: fixed;
+  top: 0;
+  right: -250px; /* Começa oculto (largura da barra de navegação) */
+  width: 250px; /* Largura da barra de navegação */
+  background-color: #0640ff; /* Cor de fundo da barra */
+  padding: 20px 10px;
+  transition: right 0.3s ease; /* Adiciona uma transição suave à animação */
+}
+
+#vertical-nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+#vertical-nav ul li {
+  margin-bottom: 10px;
+}
+
+#toggle-nav {
+  position: absolute;
+  top: 20px;
+  left: -30px;
+  background-color: #0640ff;
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.collapsed {
+  right: -250px; /* Largura da barra de navegação */
+}
+
+.expanded {
+  right: 0;
+}
 

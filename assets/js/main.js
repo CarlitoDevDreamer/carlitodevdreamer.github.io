@@ -315,3 +315,12 @@ document.addEventListener("DOMContentLoaded", function () {
   // Atualize a seção ativa quando a página for carregada
   updateActiveSection();
 });
+
+
+
+
+document.getElementById("toggle-nav").addEventListener("click", function () {
+  var nav = document.getElementById("vertical-nav");
+  nav.classList.toggle("expanded");
+  nav.classList.toggle("collapsed");
+});

@@ -1208,4 +1208,31 @@ section {
 }
 
 
+/* Estilos para a barra de navegação vertical */
+#vertical-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #0640ff; /* Cor de fundo da barra */
+  padding: 20px 10px;
+}
 
+#vertical-nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+#vertical-nav li {
+  margin-bottom: 10px;
+}
+
+#vertical-nav a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+/* Estilo para a seção ativa */
+#vertical-nav a.active {
+  font-weight: bold; /* Negrito para a seção ativa */
+}

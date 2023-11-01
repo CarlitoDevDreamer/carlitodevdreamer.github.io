@@ -1186,3 +1186,26 @@ section {
   color: #fff; /* Cor do texto do link ativo */
 }
 
+
+
+
+
+
+/* Estilo para a animação vertical da imagem */
+@keyframes moveUpDown {
+  0%, 100% {
+      transform: translateY(0);
+  }
+  50% {
+      transform: translateY(-20px); /* Ajuste o valor para controlar a altura do movimento */
+  }
+}
+
+
+/* Aplicar a animação à imagem */
+.move-image {
+  animation: moveUpDown 2s infinite alternate; /* Ajuste a duração da animação conforme necessário */
+}
+
+
+

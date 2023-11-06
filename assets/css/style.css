@@ -1290,7 +1290,8 @@ section {
 }
 
 .section-header {
-  background: #444;
+  background: #0077b6; /* Cor azul oceano */
+  color: #fff; /* Cor do texto branca */
   padding: 1rem;
   position: sticky;
   top: 0;

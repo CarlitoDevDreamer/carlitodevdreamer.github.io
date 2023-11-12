@@ -324,3 +324,19 @@ document.getElementById("toggle-nav").addEventListener("click", function () {
   nav.classList.toggle("expanded");
   nav.classList.toggle("collapsed");
 });
+
+
+
+    // Calcular a idade com base no ano de nascimento
+    function calculateAge(birthYear) {
+      const currentYear = new Date().getFullYear();
+      return currentYear - birthYear;
+    }
+
+    // Obter o ano de nascimento a partir da data de nascimento
+    const birthdayElement = document.getElementById('birthday');
+    const birthYear = new Date(birthdayElement.innerText).getFullYear();
+
+    // Calcular a idade e exibi-la na página
+    const ageElement = document.getElementById('age');
+    ageElement.innerText = calculateAge(birthYear);

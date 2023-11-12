@@ -1297,3 +1297,13 @@ section {
   top: 0;
   z-index: 1000; /* Escolha um valor adequado */
 }
+
+
+.quote-container {
+  text-align: center;
+  margin-top: 20px; /* Ajuste o valor conforme necessário para o espaçamento vertical desejado */
+}
+
+.quote-container p {
+  margin: 10px 0; /* Ajuste o valor conforme necessário para o espaçamento vertical desejado */
+}

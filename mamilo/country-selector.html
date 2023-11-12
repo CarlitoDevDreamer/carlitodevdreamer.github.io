@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown de Países</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilo básico para melhorar a aparência do dropdown */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        select {
+            padding: 8px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <label for="paises">Escolha um país:</label>
+    <select id="paises" onchange="redirecionarParaURL(this.value)">
+        <option value="EUA">
+            <i class="fas fa-flag-us"></i> UNITED STATES OF AMERICA
+        </option>
+        <option value="BR">
+            <i class="fas fa-flag-br"></i> BRASIL
+        </option>
+        <option value="PT">
+            <i class="fas fa-flag-pt"></i> PORTUGAL
+        </option>
+    </select>
+    <select id="paises" onchange="redirecionarParaURL(this.value)">
+    <option value="EUA">
+        🇺🇸 UNITED STATES OF AMERICA
+    </option>
+    <option value="BR">
+        🇧🇷 BRASIL
+    </option>
+    <option value="PT">
+        🇵🇹 PORTUGAL
+    </option>
+</select>
+
+<select id="paises" onchange="redirecionarParaURL(this.value)">
+    <option value="EUA">
+        <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/4x3/us.svg" alt="USA"> UNITED STATES OF AMERICA
+    </option>
+    <option value="BR">
+        <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/4x3/br.svg" alt="BR"> BRASIL
+    </option>
+    <option value="PT">
+        <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/4x3/pt.svg" alt="PT"> PORTUGAL
+    </option>
+</select>
+
+
+
+    <script>
+        function redirecionarParaURL(pais) {
+            switch (pais) {
+                case 'EUA':
+                    window.location.href = 'https://remotearround.com/';
+                    break;
+                case 'BR':
+                    window.location.href = 'https://br.remotearround.com/';
+                    break;
+                case 'PT':
+                    window.location.href = 'https://pt.remotearround.com/';
+                    break;
+                default:
+                    // Caso padrão, se necessário
+                    break;
+            }
+        }
+    </script>
+
+</body>
+</html>

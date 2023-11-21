@@ -1,0 +1,18 @@
+#project-title {
+    color: rgb(0, 132, 255);
+    position: relative;
+    text-align: center;
+    margin-top: 20px;
+    
+}
+
+.cover-image {
+    margin-top: 0px;
+}
+
+
+.logo {
+    position: relative;
+    width: 100px; /* Adjust the width as desired */
+    margin-right: 10px; /* Adjust the margin as desired */
+}

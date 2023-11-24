@@ -113,4 +113,39 @@ article.accordion section h2
 
 
 
+@media (min-width: 992px) {
+    .my-desktop-div {
+        display: block;
+    }
+}
 
+@media (max-width: 991px) {
+    .my-mobile-div {
+        display: block;
+    }
+}
+
+
+.desk{
+    width:400px;
+    height:200px;
+    background:red;
+  }
+  .div-only-mobile{
+    width:400px;
+    height:200px;
+    background:orange;
+  }
+  @media screen and (max-width : 1920px){
+    .div-only-mobile{
+    visibility:hidden;
+    }
+  }
+  @media screen and (max-width : 906px){
+   .desk{
+    visibility:hidden;
+    }
+   .div-only-mobile{
+    visibility:visible;
+    }
+  }

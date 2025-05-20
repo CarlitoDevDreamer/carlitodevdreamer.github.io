@@ -27,8 +27,8 @@
 
         .wheel-container {
             position: relative;
-            width: 400px; /* Aumentado ligeiramente */
-            height: 400px; /* Aumentado ligeiramente */
+            width: 400px;
+            height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -39,39 +39,40 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 10px solid #555; /* Borda cinza escura como na imagem */
+            border: 10px solid #555;
             box-shadow: 0 0 25px rgba(0,0,0,0.6), inset 0 0 15px rgba(0,0,0,0.4);
-            /* transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1.0); dynamically set */
             transform-origin: center center;
         }
 
-        .pointer {
+        /* Estilo para a imagem da seta */
+        #pointer-arrow {
             position: absolute;
-            /* Seta à esquerda (9 horas) */
-            left: -20px; /* Posição para fora da borda da roleta */
+            left: -30px; /* Ajuste para posicionar a ponta da seta perto da borda */
             top: 50%;
-            transform: translateY(-50%) rotate(0deg); /* Aponta para a direita */
-            width: 0;
-            height: 0;
-            /* Triângulo mais estilizado */
-            border-top: 25px solid transparent;       /* Metade da altura */
-            border-bottom: 25px solid transparent;    /* Metade da altura */
-            border-right: 35px solid #c0392b;       /* Largura e cor (vermelho escuro) */
+            transform: translateY(-50%); /* Centraliza verticalmente */
+            width: 80px; /* Ajuste o tamanho conforme necessário */
+            height: auto;
             z-index: 10;
             filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.5));
+            /* A animação será aplicada via classe JavaScript */
+            transform-origin: center right; /* Ponto de pivô para animação de "flick" */
         }
-         /* Seta triangular alternativa, um pouco mais "realista" */
-        .pointer::before {
-            content: '';
-            position: absolute;
-            right: -3px; /* Ligeiro ajuste para sobreposição */
-            top: -21px; /* Ajuste para alinhar */
-            width: 0;
-            height: 0;
-            border-top: 21px solid transparent;
-            border-bottom: 21px solid transparent;
-            border-right: 30px solid #e74c3c; /* Cor mais clara para face */
-            z-index: 11;
+
+        /* Animação da seta a "bater" nos pinos */
+        @keyframes flick-arrow {
+            0%, 100% {
+                transform: translateY(-50%) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-50%) rotate(-7deg); /* Mexe para cima */
+            }
+            75% {
+                transform: translateY(-50%) rotate(7deg);  /* Mexe para baixo */
+            }
+        }
+
+        #pointer-arrow.is-flicking {
+            animation: flick-arrow 0.12s ease-in-out infinite;
         }
 
 
@@ -91,9 +92,9 @@
         }
 
         #lever {
-            width: 30px; /* Largura do cabo */
-            height: 150px; /* Altura do cabo */
-            background: linear-gradient(90deg, #bdc3c7, #95a5a6, #bdc3c7); /* Efeito metálico */
+            width: 30px;
+            height: 150px;
+            background: linear-gradient(90deg, #bdc3c7, #95a5a6, #bdc3c7);
             border: 2px solid #7f8c8d;
             border-bottom: none;
             position: relative;
@@ -101,30 +102,28 @@
             transform-origin: bottom center;
             transition: transform 0.2s ease-out;
             box-shadow: 2px 0 5px rgba(0,0,0,0.3);
-            margin-top: -10px; /* Para "entrar" na base */
+            margin-top: -10px;
         }
 
         #lever-ball {
             width: 50px;
             height: 50px;
-            background: radial-gradient(circle at 15px 15px, #e74c3c, #c0392b); /* Vermelho com brilho */
+            background: radial-gradient(circle at 15px 15px, #e74c3c, #c0392b);
             border-radius: 50%;
             border: 2px solid #a03020;
             position: absolute;
-            top: -25px; /* Metade da altura da bola para cima */
+            top: -25px;
             left: 50%;
             transform: translateX(-50%);
             box-shadow: 0 3px 5px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
         }
 
-        /* Animação da alavanca */
         #lever.pulling {
-            transform: rotateX(50deg) rotateY(-10deg) translateY(10px); /* Perspectiva de puxar */
+            transform: rotateX(50deg) rotateY(-10deg) translateY(10px);
         }
-        #lever:active:not(.pulling-disabled) { /* Estilo quando clicada, se não desabilitada */
+        #lever:active:not(.pulling-disabled) {
              transform: rotateX(30deg) rotateY(-5deg) translateY(5px);
         }
-
 
     </style>
 </head>
@@ -132,7 +131,8 @@
 
     <div class="game-area">
         <div class="wheel-container">
-            <div class="pointer"></div>
+            <!-- Substituir o div .pointer pela imagem da seta -->
+            <img src="seta_feira.png" id="pointer-arrow" alt="Seta">
             <img src="aniversariante.png" id="spinning-wheel" alt="Roda da Sorte">
         </div>
 
@@ -147,23 +147,18 @@
     <script>
         const wheel = document.getElementById('spinning-wheel');
         const lever = document.getElementById('lever');
+        const pointerArrow = document.getElementById('pointer-arrow'); // Referência para a imagem da seta
 
         let isSpinning = false;
-        let currentAbsoluteRotation = 0; // Rotação absoluta acumulada da roleta
+        let currentAbsoluteRotation = 0;
 
-        // Posição da SETA (onde o item deve parar): 9 horas = 270 graus
         const POINTER_TARGET_ANGLE_ON_SCREEN = 270;
+        // VALOR AJUSTADO COM BASE NO SEU FEEDBACK ANTERIOR.
+        // Se precisar de mais ajustes finos, altere este valor.
+        // Diminuir este valor faz a roleta girar MAIS.
+        // Aumentar este valor faz a roleta girar MENOS.
+        const COFFEE_CUP_ANGLE_ON_IMAGE = 298; // Exemplo: 315 - 7 = 308 (para rodar ~7 graus a mais)
 
-        // Posição original do CAFÉ na imagem 'aniversariante.png'
-        // Contando no sentido horário a partir do topo (0 graus) da imagem.
-        // Se o café está entre 10 e 11 horas na imagem, é ~315 graus.
-        const COFFEE_CUP_ANGLE_ON_IMAGE = 299; // Ajuste este valor se necessário!
-
-        // Este é o ângulo final que a imagem da roleta precisa ter para que
-        // o café (a 315° na imagem) alinhe com a seta (a 270° no ecrã).
-        // RotaçãoFinalImagem = AlvoNoEcrã - PosiçãoOriginalItemNaImagem
-        // (270 - 315 + 360) % 360 = -45 + 360 = 315 graus.
-        // A imagem precisa estar rotacionada 315 graus no final.
         const FINAL_IMAGE_OFFSET_FOR_COFFEE = (POINTER_TARGET_ANGLE_ON_SCREEN - COFFEE_CUP_ANGLE_ON_IMAGE + 360) % 360;
 
         const tickSound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU0DQDQAAAIAAgACAAIABQAGAAgACgALAAwADQANAAwACwAKAAgABgAFAAMAAgAAAP//AAAA//8CAP//A+AAgQGCAYQChAKGAo0CkgKUApoCrALAAs0C0gLYAuQC7gMAAwkDEwMZAx8DIQMnAysDNQM9A0UDSgNPA1QDWgNcA2ADZANkA2oDbQNzA3gDfwOFA4oDjAOQA5UDogOkA6wDsQO1A7kDxAPPBAACCAQJBhQHGgccCDQIOAhUCHYIgAiICCgIqAiwCMAE0AToBQQFMAVEBXQFlAX0BjAGfAaUBqQGvAbUBwgHMAc4B0gHUAdgB3QHgAeIB5QHqAfMB9AH6AgQCDwIWBBwEIgQoBDIEPgRGBEcESwRREME9AUUBRwFOAVIBWQFgAWgBbQFyAXcBfgGDAYYBjgGRAZUBmwGfAaMBpQGrAbEBtQG9AcIBxgHOAdEB1QHZAd8B5AHpAfMCAQIIBA8EFAQeBCQEOARDBEgETQRgBGgEcAR8BIAEnASsBNwFAAUkBTAFSAWEBZAFvAXcBhwGRAZgBowGtAbkBwgHTAeAB5QIDAwoDFgMgAy0DRANYA3QDgQOaA7AD+wQOBB8ENgRMBGkEgASYBKUEwATwBQgFGgU0BVkFagV/BY0FnwW1BYAFsgW/Bc8F4AXrBgYGEQYhBisGNQZMBmMGeQaNBqQGrga/BsoG0wbeBuEG8gcCBxMGHwcjBy0HQQdNB1UHbgd+B4sHlwehB6wHtAfCB88H4wfxCAEIDQgXCB8IKQgyCDwIQAhGCFAIXghqCHIIegh/CJQIoAioCLQIwQjOCPIJAAkKCRQJHgkoCToJRAk/CUwJVAlhCWgJbQl0CYQJjQmUCaQJqgmyCb4JxAnOCdoJ7Qn9CiEKJAopCjUKRQpQCloKaQpxCn0KkQqfCrIKvgrICsoK0grdCuUK+gsGCw8LIAsuCz0LTgtWC20LgQudC6sLwAvUC+IMBAwmDGIMZwx/DMkM5Q0BDQkNGQ0iDSsNOQ1S DWkNgQ2ZDacNtA3IDeYN+A4CDg4OFg4gDiYOOw5IDlMOVQ5eDmIOcw6NDq0OvA7VDuIO/w8MDxYPJQ8wD0kPUA9hD24PhQ+VD6gPtA/FD+0QAhAOEBMQGRAdECUQLhA8EEQQTRBQEFgQaBB1BEIEVgRiBGoEcQR8BIUEmASrBLAEvATQBOgE/AUMBQwFMAVMBUwFTAVMBTAFDAUEBOgE0AS8BKwEmASEBHwEcARoBFAEQDzwEMgk4ASoBHgETARAA');
@@ -174,23 +169,19 @@
             if (clickIntervalId) clearInterval(clickIntervalId);
 
             let initialDelay = 40;
-            let finalDelay = Math.min(250, durationMs / 15); // Últimos clicks mais lentos, mas não tão lentos se a duração for curta
+            let finalDelay = Math.min(250, durationMs / 15);
             let elapsedTime = 0;
-            const totalClicksEstimate = durationMs / ((initialDelay + finalDelay) / 2); // Rough estimate for number of clicks
 
             function scheduleClick() {
-                if (elapsedTime >= durationMs - finalDelay) { // Parar um pouco antes do fim
+                if (elapsedTime >= durationMs - finalDelay) {
                     clearInterval(clickIntervalId);
                     clickIntervalId = null;
                     return;
                 }
-
                 tickSound.currentTime = 0;
                 tickSound.play().catch(e => {});
-
                 const progress = elapsedTime / durationMs;
-                const currentDelay = initialDelay + (finalDelay - initialDelay) * Math.pow(progress, 1.5); // Ease-out
-
+                const currentDelay = initialDelay + (finalDelay - initialDelay) * Math.pow(progress, 1.5);
                 elapsedTime += currentDelay;
                 clickIntervalId = setTimeout(scheduleClick, currentDelay);
             }
@@ -202,54 +193,43 @@
                 return;
             }
             isSpinning = true;
-            lever.classList.add('pulling', 'pulling-disabled'); // Animação de puxar e desabilita clique via CSS
+            lever.classList.add('pulling', 'pulling-disabled');
             lever.style.pointerEvents = 'none';
+            pointerArrow.classList.add('is-flicking'); // Inicia a animação da seta
 
-
-            // Velocidade/Duração Aleatória
-            const randomDurationSeconds = Math.random() * 3 + 4; // Entre 4 e 7 segundos
+            const randomDurationSeconds = Math.random() * 3 + 4;
             const spinDurationMs = randomDurationSeconds * 1000;
+            const additionalFullSpins = Math.floor(Math.random() * 4) + 3;
 
-            // Voltas Aleatórias
-            // Queremos que a roleta dê algumas voltas completas *adicionais*
-            // além da rotação atual para chegar ao alvo.
-            const additionalFullSpins = Math.floor(Math.random() * 4) + 3; // 3 a 6 voltas completas extras
-
-            // Calcula a rotação final absoluta para alinhar o café
-            // A ideia é: quantas voltas completas já deu? (currentAbsoluteRotation / 360)
-            // Adiciona as novas voltas completas.
-            // E no final, ajusta para o offset do café.
             let targetRotation = (Math.floor(currentAbsoluteRotation / 360) + additionalFullSpins) * 360 + FINAL_IMAGE_OFFSET_FOR_COFFEE;
 
-            // Garante que a nova rotação é sempre maior que a atual para girar para frente
             if (targetRotation <= currentAbsoluteRotation) {
-                targetRotation += 360; // Adiciona uma volta completa se necessário
+                targetRotation += 360;
             }
-            // Se, por algum motivo de cálculo de float, ainda estiver muito próximo ou igual,
-            // e for o mesmo "slice" final, força mais uma volta.
-            // Basicamente, (targetRotation % 360) deve ser igual a FINAL_IMAGE_OFFSET_FOR_COFFEE.
-            // Se currentAbsoluteRotation % 360 já é FINAL_IMAGE_OFFSET_FOR_COFFEE e targetRotation não adicionou voltas suficientes.
             if ( (targetRotation - currentAbsoluteRotation) < 360 && (currentAbsoluteRotation % 360 === FINAL_IMAGE_OFFSET_FOR_COFFEE) ) {
                  targetRotation += 360;
             }
 
-
             currentAbsoluteRotation = targetRotation;
 
-            wheel.style.transition = `transform ${spinDurationMs / 1000}s cubic-bezier(0.33, 1, 0.68, 1)`; // Easing mais suave no final
+            wheel.style.transition = `transform ${spinDurationMs / 1000}s cubic-bezier(0.33, 1, 0.68, 1)`;
             wheel.style.transform = `rotate(${currentAbsoluteRotation}deg)`;
 
             playPegClicks(spinDurationMs);
 
-            setTimeout(() => { // Para remover a classe 'pulling' da alavanca um pouco antes do fim da rotação
+            setTimeout(() => {
                 lever.classList.remove('pulling');
             }, spinDurationMs - 300 > 0 ? spinDurationMs - 300 : 50);
-
 
             wheel.addEventListener('transitionend', () => {
                 isSpinning = false;
                 lever.classList.remove('pulling-disabled');
                 lever.style.pointerEvents = 'auto';
+                pointerArrow.classList.remove('is-flicking'); // Para a animação da seta
+                // Garante que a seta volta à posição neutra se a animação for interrompida
+                pointerArrow.style.transform = 'translateY(-50%) rotate(0deg)';
+
+
                 if (clickIntervalId) {
                     clearInterval(clickIntervalId);
                     clickIntervalId = null;
@@ -264,32 +244,31 @@
         });
         lever.addEventListener('mousedown', () => {
             if (!lever.classList.contains('pulling-disabled')) {
-                lever.classList.add('pulling'); // Efeito visual de puxar no mousedown
+                lever.classList.add('pulling');
             }
         });
         lever.addEventListener('mouseup', () => {
-             lever.classList.remove('pulling'); // Remove efeito visual no mouseup se não estiver girando
+             lever.classList.remove('pulling');
         });
-         lever.addEventListener('mouseleave', () => { // Caso o mouse saia enquanto pressionado
+         lever.addEventListener('mouseleave', () => {
              lever.classList.remove('pulling');
         });
 
-
-        // Preload image
-        const img = new Image();
-        img.src = 'aniversariante.png';
-        img.onload = () => {
-            console.log('Imagem da roleta carregada.');
-            // Opcional: aplicar uma rotação inicial para que o café já comece perto da seta (mas não exatamente)
-            // Isso é mais complexo se a intenção é que a imagem pareça "direita" inicialmente.
-            // Para manter a imagem "direita" inicialmente, não fazemos rotação aqui.
-            // A primeira rotação irá levá-la para o café.
-        };
-        img.onerror = () => {
+        const imgWheel = new Image();
+        imgWheel.src = 'aniversariante.png';
+        imgWheel.onload = () => console.log('Imagem da roleta carregada.');
+        imgWheel.onerror = () => {
             console.error('Erro ao carregar aniversariante.png.');
             wheel.alt = "Erro ao carregar imagem";
         }
 
+        const imgArrow = new Image();
+        imgArrow.src = 'seta_feira.png'; // Precarrega a imagem da seta
+        imgArrow.onload = () => console.log('Imagem da seta carregada.');
+        imgArrow.onerror = () => {
+            console.error('Erro ao carregar seta_feira.png. Verifique o nome e o local do ficheiro.');
+            pointerArrow.alt = "Erro seta";
+        }
     </script>
 
 </body>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roleta da Sorte</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #2c3e50;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow: hidden; /* Hide scrollbars if content is too big */
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .wheel-assembly {
+            position: relative;
+            width: 350px; /* Adjust as needed */
+            height: 350px; /* Adjust as needed */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #spinning-wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%; /* Makes the image round */
+            object-fit: cover; /* Ensures image covers the area, might crop */
+            border: 8px solid #fff; /* Optional: adds a border like a wheel */
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1.0); /* Smooth spin out */
+            transform-origin: center center;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -15px; /* Position arrow slightly above the wheel */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 35px solid #e74c3c; /* Red arrow */
+            z-index: 10;
+        }
+
+        .lever-container {
+            perspective: 500px; /* For 3D effect on lever pull */
+        }
+
+        #lever {
+            width: 60px; /* Adjust as needed */
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+            transform-origin: bottom center; /* Rotate from the base */
+            border: 3px solid #7f8c8d;
+            border-radius: 10px 10px 0 0;
+            padding: 10px;
+            background-color: #bdc3c7;
+            box-shadow: 0 5px 0 #7f8c8d; /* Simple shadow for depth */
+        }
+
+        #lever:active {
+            transform: rotateX(45deg) translateY(5px); /* Simulate pull */
+            box-shadow: 0 2px 0 #7f8c8d;
+        }
+
+        /* Basic button style if you prefer a button */
+        .spin-button-fallback {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: white;
+            background-color: #3498db;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .spin-button-fallback:hover {
+            background-color: #2980b9;
+        }
+        .spin-button-fallback:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="wheel-assembly">
+            <div class="pointer"></div>
+            <img src="aniversariante.png" id="spinning-wheel" alt="Roda da Sorte do Aniversariante">
+        </div>
+
+        <div class="lever-container">
+            <!-- Using an SVG for a simple lever graphic -->
+            <svg id="lever" viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+                <rect x="35" y="0" width="30" height="150" rx="10" ry="10" fill="#c0c0c0" stroke="#505050" stroke-width="2"/>
+                <circle cx="50" cy="175" r="25" fill="#e74c3c" stroke="#a03020" stroke-width="2"/>
+            </svg>
+        </div>
+        <!-- Fallback button if you don't want the lever -->
+        <!-- <button id="spin-button-fallback" class="spin-button-fallback">Girar!</button> -->
+    </div>
+
+    <script>
+        const wheel = document.getElementById('spinning-wheel');
+        const lever = document.getElementById('lever');
+        // const spinButtonFallback = document.getElementById('spin-button-fallback'); // Uncomment if using button
+
+        let isSpinning = false;
+        let currentRotation = 0; // Keep track of current rotation
+
+        // The angle (in degrees) on your image where the coffee cup is.
+        // If martini is at 0° (top), and coffee is at ~10:30/11:00, it's ~315° (or -45°).
+        // We want this item to land at the pointer (0°).
+        // So, the image needs to rotate by (0 - 315) = -315°, which is +45°.
+        const targetAngleForItem = 45; // Degrees to rotate to bring coffee cup to the top pointer
+
+        // "Tick" sound for the pegs
+        // A very short, simple click sound encoded in Base64
+        const tickSound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU0DQDQAAAIAAgACAAIABQAGAAgACgALAAwADQANAAwACwAKAAgABgAFAAMAAgAAAP//AAAA//8CAP//A+AAgQGCAYQChAKGAo0CkgKUApoCrALAAs0C0gLYAuQC7gMAAwkDEwMZAx8DIQMnAysDNQM9A0UDSgNPA1QDWgNcA2ADZANkA2oDbQNzA3gDfwOFA4oDjAOQA5UDogOkA6wDsQO1A7kDxAPPBAACCAQJBhQHGgccCDQIOAhUCHYIgAiICCgIqAiwCMAE0AToBQQFMAVEBXQFlAX0BjAGfAaUBqQGvAbUBwgHMAc4B0gHUAdgB3QHgAeIB5QHqAfMB9AH6AgQCDwIWBBwEIgQoBDIEPgRGBEcESwRREME9AUUBRwFOAVIBWQFgAWgBbQFyAXcBfgGDAYYBjgGRAZUBmwGfAaMBpQGrAbEBtQG9AcIBxgHOAdEB1QHZAd8B5AHpAfMCAQIIBA8EFAQeBCQEOARDBEgETQRgBGgEcAR8BIAEnASsBNwFAAUkBTAFSAWEBZAFvAXcBhwGRAZgBowGtAbkBwgHTAeAB5QIDAwoDFgMgAy0DRANYA3QDgQOaA7AD+wQOBB8ENgRMBGkEgASYBKUEwATwBQgFGgU0BVkFagV/BY0FnwW1BYAFsgW/Bc8F4AXrBgYGEQYhBisGNQZMBmMGeQaNBqQGrga/BsoG0wbeBuEG8gcCBxMGHwcjBy0HQQdNB1UHbgd+B4sHlwehB6wHtAfCB88H4wfxCAEIDQgXCB8IKQgyCDwIQAhGCFAIXghqCHIIegh/CJQIoAioCLQIwQjOCPIJAAkKCRQJHgkoCToJRAk/CUwJVAlhCWgJbQl0CYQJjQmUCaQJqgmyCb4JxAnOCdoJ7Qn9CiEKJAopCjUKRQpQCloKaQpxCn0KkQqfCrIKvgrICsoK0grdCuUK+gsGCw8LIAsuCz0LTgtWC20LgQudC6sLwAvUC+IMBAwmDGIMZwx/DMkM5Q0BDQkNGQ0iDSsNOQ1S DWkNgQ2ZDacNtA3IDeYN+A4CDg4OFg4gDiYOOw5IDlMOVQ5eDmIOcw6NDq0OvA7VDuIO/w8MDxYPJQ8wD0kPUA9hD24PhQ+VD6gPtA/FD+0QAhAOEBMQGRAdECUQLhA8EEQQTRBQEFgQaBB1BEIEVgRiBGoEcQR8BIUEmASrBLAEvATQBOgE/AUMBQwFMAVMBUwFTAVMBTAFDAUEBOgE0AS8BKwEmASEBHwEcARoBFAEQDzwEMgk4ASoBHgETARAA');
+        tickSound.volume = 0.3; // Adjust volume
+
+        let clickIntervalId = null;
+        const spinDurationMs = 5000; // Must match CSS transition duration
+
+        function playPegClicks() {
+            let initialDelay = 50; // ms between first clicks
+            let finalDelay = 300;  // ms between last clicks
+            let elapsedTime = 0;
+            let numClicksPlayed = 0;
+
+            function scheduleClick() {
+                if (elapsedTime >= spinDurationMs) {
+                    clearInterval(clickIntervalId);
+                    clickIntervalId = null;
+                    return;
+                }
+
+                tickSound.currentTime = 0;
+                tickSound.play().catch(e => console.warn("Audio play failed:", e));
+
+                // Calculate next delay: starts small, increases towards end
+                const progress = elapsedTime / spinDurationMs;
+                const currentDelay = initialDelay + (finalDelay - initialDelay) * Math.pow(progress, 2); // Ease-out like effect for clicks
+
+                elapsedTime += currentDelay;
+                numClicksPlayed++;
+                clickIntervalId = setTimeout(scheduleClick, currentDelay);
+            }
+            scheduleClick();
+        }
+
+        function spinWheel() {
+            if (isSpinning) {
+                return;
+            }
+            isSpinning = true;
+            if (lever) lever.style.pointerEvents = 'none'; // Disable lever
+            // if (spinButtonFallback) spinButtonFallback.disabled = true; // Uncomment if using button
+
+            // Calculate rotation
+            // Add 3 to 7 full spins randomly + the specific angle for the coffee cup
+            const randomExtraSpins = Math.floor(Math.random() * 5) + 3; // 3 to 7 full spins
+            currentRotation += (randomExtraSpins * 360) + targetAngleForItem;
+
+            wheel.style.transition = `transform ${spinDurationMs / 1000}s cubic-bezier(0.25, 0.1, 0.25, 1.0)`;
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            if (clickIntervalId) {
+                clearInterval(clickIntervalId); // Clear any existing interval
+            }
+            playPegClicks();
+
+            // Re-enable after transition ends
+            wheel.addEventListener('transitionend', () => {
+                isSpinning = false;
+                if (lever) lever.style.pointerEvents = 'auto';
+                // if (spinButtonFallback) spinButtonFallback.disabled = false; // Uncomment if using button
+                
+                // Normalize currentRotation to keep it within 0-359 for the next spin calculation base
+                // (though targetAngleForItem will always make it hit the coffee)
+                // We add targetAngleForItem to ensure that visually it's on the coffee before a new spin
+                // currentRotation = currentRotation % 360; 
+                // Actually, since we want it to land on coffee, the "base" for the next spin is effectively where coffee is
+                currentRotation = targetAngleForItem;
+
+
+                if (clickIntervalId) { // Ensure clicks stop if transition ends early or unexpectedly
+                    clearInterval(clickIntervalId);
+                    clickIntervalId = null;
+                }
+            }, { once: true }); // Important: execute only once per spin
+        }
+
+        if (lever) {
+            lever.addEventListener('click', spinWheel);
+        }
+        // if (spinButtonFallback) { // Uncomment if using button
+        //     spinButtonFallback.addEventListener('click', spinWheel);
+        // }
+
+        // Preload image (optional, good practice)
+        const img = new Image();
+        img.src = 'aniversariante.png';
+        img.onload = () => {
+            console.log('Image for wheel loaded.');
+        };
+        img.onerror = () => {
+            console.error('Error loading aniversariante.png. Make sure it is in the same directory.');
+            wheel.alt = "Erro ao carregar imagem da roleta";
+        }
+
+    </script>
+
+</body>
+</html>

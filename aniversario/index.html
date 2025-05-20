@@ -171,7 +171,7 @@
     </style>
 </head>
 <body>
-<h1 class="main-title">Calha Sempre!</h1>
+<h1 class="main-title">Calha Sempre! Rode a Roleta e Tente a sua Sorte!</h1>
     <div class="game-area">
         <div class="wheel-container">
             <!-- Substituir o div .pointer pela imagem da seta -->
@@ -200,45 +200,50 @@
         const quoteTextElement = document.getElementById('quote-text');
         const quoteBoard = document.getElementById('quote-board'); 
 
-            // LISTA DE FRASES
-    const birthdayQuotes = [
-        "A idade é apenas o número de anos que o mundo tem desfrutado de você. Feliz aniversário!",
-        "Envelhecer é obrigatório, mas crescer é opcional. Continue jovem de espírito!",
-        "Que cada vela no seu bolo seja um desejo realizado. Parabéns!",
-        "A vida é uma jornada e os aniversários são as paradas para celebrar. Aproveite a sua!",
-        "Conte a sua idade pelos amigos, não pelos anos. Conte a sua vida pelos sorrisos, não pelas lágrimas.",
-        "A felicidade não tem idade. Que a sua seja eterna!",
-        "A sabedoria vem com os invernos. E você está cada vez mais sábio!",
-        "Que a longevidade lhe traga ainda mais alegrias e realizações.",
-        "Envelhecer é como escalar uma grande montanha: enquanto se sobe, as forças diminuem, mas o olhar é mais livre, a vista mais ampla e serena.",
-        "Não lamente o envelhecer, é um privilégio negado a muitos.",
-        "A cada ano, uma nova página de sabedoria é escrita no livro da vida.",
-        "A juventude não é uma época da vida, é um estado de espírito.",
-        "O segredo da longevidade é comer a metade, andar o dobro e rir o triplo.",
-        "Felicidade é ter algo o que fazer, ter algo que amar e algo que esperar... em qualquer idade!",
-        "Os anos podem enrugar a pele, mas renunciar ao entusiasmo enruga a alma.",
-        "Viva cada dia como se fosse o último, e celebre cada aniversário como se fosse o primeiro.",
-        "A idade de ouro é aquela em que nos sentimos bem connosco próprios.",
-        "Que a sua jornada seja longa, feliz e cheia de momentos inesquecíveis.",
-        "A beleza do envelhecimento está na riqueza das experiências acumuladas.",
-        "Não adicione anos à sua vida, mas vida aos seus anos!",
-        "Sábio é aquele que aprende com a experiência dos anos.",
-        "A felicidade consiste em partilhar as pequenas e as grandes coisas com as pessoas que amamos. E isso não tem idade!",
-        "A melhor idade é estar vivo, saudável e feliz.",
-        "Com o tempo, descobrimos que o essencial é invisível aos olhos, mas sentido no coração. Feliz aniversário!",
-        "Que a sua sabedoria continue a iluminar o caminho de muitos. Parabéns!",
-        "A idade adiciona sabor à vida, como o tempo ao bom vinho.",
-        "A velhice bem vivida é um tesouro de experiências.",
-        "Sorria! Hoje é um dia especial, mais um ano de sabedoria e felicidade.",
-        "Desejo-lhe um aniversário repleto de paz, amor e muitos momentos felizes.",
-        "Lembre-se: você não está a ficar mais velho, está a ficar mais experiente e interessante!",
-        "Que a alegria acompanhe você por todos os momentos e que Deus continue guiando todos os seus passos e iluminando cada vez mais os seus pensamentos.",
-        "A vida é uma dádiva. Celebre cada momento dela!",
-        "A maturidade nos ensina a apreciar as coisas simples da vida. Feliz aniversário!",
-        "Que este novo ciclo traga ainda mais motivos para sorrir e agradecer.",
-        "Envelhecer com graça é uma arte. E você é um artista!"
-        // Adicione quantas frases quiser aqui!
-    ];
+const birthdayQuotes = [
+    // Humor inteligente
+    "Parabéns! A tua idade já não se conta com os dedos… nem com as mãos dos amigos.",
+    "Chegaste à fase em que a memória começa a ir embora… mas volta de vez em quando para te assustar.",
+    "Dizem que a idade traz juízo… mas no teu caso ela trouxe foi dores nas articulações.",
+    "O bom de envelhecer é que ninguém espera que chegues a horas. (Eu chego sempre a horas!)",
+    "A sabedoria vem com a idade. Ou pelo menos é o que diz quem já não tem energia para discutir.",
+    
+    // Piadas secas
+    "Já viste a quantidade de tempo que levas vivo? Impressionante… e preocupante.",
+    "Parabéns! Agora estás oficialmente na categoria de ‘ainda cá estás?’",
+    "Faz anos? Outra vez? Isto agora é todos os anos?",
+    "A idade é só um número. No teu caso, um número assustador.",
+    "Dizem que és como o vinho… mas eu diria que já passaste a fase da fermentação.",
+    
+    // Frases normais com humor leve
+    "Feliz aniversário! Que o teu dia seja tão brilhante como a tua testa sem cabelo.",
+    "A idade é um privilégio, especialmente quando ainda tens dentes para sorrir.",
+    "Com a idade vem a paz… principalmente porque já ninguém te convida para sair.",
+    "Não estás a ficar velho. Estás a amadurecer… como banana esquecida na fruteira.",
+    "Aniversário é o único dia em que nos dão parabéns por continuar vivos. Aproveita.",
+    
+    // Humor negro
+    "Parabéns! Mais um ano a enganar a morte. Mas ela não tem pressa.",
+    "Sabes que estás velho quando deixas de soprar velas e começas a evitar escadas.",
+    "A tua idade é aquela em que o seguro de vida já te olha com desconfiança.",
+    "A morte deve estar com preguiça… ou então és mesmo teimoso.",
+    "A vantagem de fazeres anos? É que ainda não fizeste o último.",
+    
+    // Mistura de humor e filosofia
+    "Cada ruga conta uma história… no teu caso, deve ser uma enciclopédia inteira.",
+    "A juventude vai, a sabedoria vem… e o reumático fica.",
+    "Fazer anos é uma bênção. A alternativa é… menos animadora.",
+    "Com o tempo percebemos que os joelhos falam. O problema é que só dizem ‘ai’ e ‘ui’.",
+    "A idade é quando preferes uma boa sesta a uma boa festa.",
+    
+    // Curta e certeira
+    "Mais um ano, menos um rim a funcionar como deve ser.",
+    "A idade traz paciência. Ou cansaço, ainda não percebi bem.",
+    "Estás em forma! Pena é que a forma seja uma bola.",
+    "Parabéns! Continuas a ser um exemplo... de sobrevivência.",
+    "Com cada ano que passa, impressionas mais... por ainda estares cá!"
+];
+
 
     
 

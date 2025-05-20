@@ -9,14 +9,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            /* justify-content: center; Removido para permitir scroll se necessário com os novos elementos */
+            padding-top: 20px; /* Espaço para o título e displays */
             min-height: 100vh;
-            background-color: #34495e; /* Cor de fundo como na imagem de exemplo */
+            background-color: #34495e;
             font-family: Arial, sans-serif;
             margin: 0;
-            overflow: hidden;
+            /* overflow: hidden; Removido para permitir scroll se necessário */
         }
-
         .game-area {
             display: flex;
             align-items: center;
@@ -126,13 +126,13 @@
         }
 
         .main-title {
-    font-size: 3em; /* Tamanho grande */
-    color: #f1c40f; /* Amarelo/Dourado */
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Sombra para destaque */
-    margin-bottom: 20px; /* Espaço antes da roleta */
-    font-family: 'Arial Black', Gadget, sans-serif; /* Uma fonte mais "bold" */
-    text-align: center;
-}
+            font-size: 2.5em; /* Ligeiramente menor para caber melhor com os displays */
+            color: #f1c40f;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 15px;
+            font-family: 'Arial Black', Gadget, sans-serif;
+            text-align: center;
+        }
 
 #quote-board-container {
     margin-top: 30px; /* Espaço depois da área do jogo */
@@ -168,13 +168,101 @@
     line-height: 1.5;
 }
 
+
+ /* Container para os Ecrãs Digitais */
+        .digital-displays-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 500px; /* Para não ficarem muito largos em ecrãs grandes */
+        }
+
+        .digital-display {
+            background-color: #080808; /* Fundo bem escuro */
+            color: #00FF00; /* Verde LCD clássico */
+            font-family: 'DS-Digital', 'Courier New', Courier, monospace; /* Fonte digital, com fallback */
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 2px solid #2a2a2a;
+            box-shadow: inset 0 0 8px rgba(0, 255, 0, 0.3), 0 0 5px rgba(0,0,0,0.5);
+            font-size: 1.4em; /* Tamanho da fonte nos displays */
+            min-width: 160px;
+            text-align: left; /* Alinhar "Créditos:" à esquerda */
+            letter-spacing: 1px;
+        }
+        .digital-display .label {
+            color: #00cc00; /* Verde um pouco mais escuro para o label */
+            font-size: 0.7em;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .digital-display .value {
+            font-weight: bold;
+            color: #33FF33; /* Verde mais brilhante para o valor */
+        }
+
+
+        /* Container para animação de dinheiro */
+        #money-animation-container {
+            position: fixed; /* Para flutuar por cima de outros elementos */
+            width: 100px; /* Área da animação */
+            height: 100px;
+            /* Posicionamento será ajustado via JS perto da alavanca */
+            pointer-events: none; /* Para não interferir com cliques */
+            z-index: 200; /* Bem na frente */
+            overflow: visible; /* Permite que os $ saiam da área do container */
+        }
+
+        .money-symbol {
+            position: absolute;
+            font-size: 2.5em; /* Tamanho dos $ */
+            font-weight: bold;
+            color: #FFD700; /* Dourado */
+            text-shadow: 1px 1px 0 #DAA520, 2px 2px 3px rgba(0,0,0,0.7); /* Sombra para efeito 3D */
+            opacity: 0;
+            animation: floatAndSpinAndFade 1.2s ease-out forwards;
+            will-change: transform, opacity; /* Otimização para animação */
+        }
+
+        @keyframes floatAndSpinAndFade {
+            0% {
+                transform: translateY(20px) rotate(0deg) scale(0.5);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-40px) rotate(180deg) scale(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg) scale(0.3);
+                opacity: 0;
+            }
+        }
+
+
     </style>
+    <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
 </head>
 <body>
 <h1 class="main-title">Calha Sempre! Rode a Roleta e Tente a sua Sorte!</h1>
-    <div class="game-area">
+
+   <!-- ECRÃS DIGITAIS -->
+    <div class="digital-displays-container">
+        <div class="digital-display" id="credits-display-container">
+            <span class="label">CRÉDITOS</span>
+            <span class="value" id="credits-value">$2.80</span>
+        </div>
+        <div class="digital-display" id="spent-display-container">
+            <span class="label">GASTO</span>
+            <span class="value" id="spent-value">$0.00</span>
+        </div>
+    </div>
+
+
+   <div class="game-area">
         <div class="wheel-container">
-            <!-- Substituir o div .pointer pela imagem da seta -->
             <img src="seta_feira.png" id="pointer-arrow" alt="Seta">
             <img src="aniversariante.png" id="spinning-wheel" alt="Roda da Sorte">
         </div>
@@ -187,18 +275,30 @@
         </div>
     </div>
 
+    <div id="money-animation-container"></div>
+
         <div id="quote-board-container">
         <div id="quote-board">
             <p id="quote-text">Puxe a alavanca para uma mensagem inspiradora!</p>
         </div>
     </div>
 
+    <h6>*disclaimer: isto é apenas um jogo, podes rodar quantas vezes quiséres, o Carlos só te paga um café. Lembra-te que é apenas um estagiário do Dep.TI (Sim, este sou eu na imagem, com 28 anos)</h6>
     <script>
         const wheel = document.getElementById('spinning-wheel');
         const lever = document.getElementById('lever');
         const pointerArrow = document.getElementById('pointer-arrow'); // Referência para a imagem da seta
         const quoteTextElement = document.getElementById('quote-text');
         const quoteBoard = document.getElementById('quote-board'); 
+
+                // NOVOS ELEMENTOS E VARIÁVEIS PARA CRÉDITOS
+        const creditsValueElement = document.getElementById('credits-value');
+        const spentValueElement = document.getElementById('spent-value');
+        const moneyAnimationContainer = document.getElementById('money-animation-container');
+
+        let totalCredits = 2.80;
+        let totalSpent = 0.00;
+        const costPerSpin = 0.40; // Custo por cada rodada (ajuste se necessário)
 
 const birthdayQuotes = [
     // Humor inteligente
@@ -264,6 +364,44 @@ const birthdayQuotes = [
         tickSound.volume = 0.2;
         let clickIntervalId = null;
 
+                function updateDisplay() {
+            creditsValueElement.textContent = `$${totalCredits.toFixed(2)}`;
+            spentValueElement.textContent = `$${totalSpent.toFixed(2)}`;
+
+            if (totalCredits < costPerSpin) {
+                lever.style.opacity = '0.6';
+                lever.style.cursor = 'not-allowed';
+                lever.classList.add('pulling-disabled'); // Garante que não pode ser puxada
+            } else {
+                lever.style.opacity = '1';
+                lever.style.cursor = 'pointer';
+                lever.classList.remove('pulling-disabled');
+            }
+        }
+
+               function showMoneyAnimation() {
+            const leverRect = lever.getBoundingClientRect();
+            // Posicionar o container da animação perto e acima da alavanca
+            moneyAnimationContainer.style.top = `${window.scrollY + leverRect.top - 80}px`; // 80px acima do topo da alavanca
+            moneyAnimationContainer.style.left = `${leverRect.left + (leverRect.width / 2) - 50}px`; // Centralizado horizontalmente
+
+            for (let i = 0; i < 3; i++) { // Criar 3 símbolos de $
+                const dollar = document.createElement('div'); // Usar div para melhor controle de Posição
+                dollar.classList.add('money-symbol');
+                dollar.textContent = '$';
+                // Offset aleatório para os $ não ficarem sobrepostos
+                dollar.style.transform = `translateX(${Math.random() * 40 - 20}px) translateY(${Math.random() * 20 - 10}px)`;
+                // Delay escalonado para a animação
+                dollar.style.animationDelay = `${i * 0.15}s`;
+                moneyAnimationContainer.appendChild(dollar);
+
+                // Remover o símbolo após a animação para não poluir o DOM
+                dollar.addEventListener('animationend', () => {
+                    dollar.remove();
+                });
+            }
+        }
+
         function playPegClicks(durationMs) {
             if (clickIntervalId) clearInterval(clickIntervalId);
 
@@ -316,91 +454,100 @@ const birthdayQuotes = [
     }, 300); // Tempo para a animação de saída antes de trocar o texto (metade da transição CSS)
 }
 
-function spinWheel() {
-    if (isSpinning) {
-        return;
-    }
-    isSpinning = true;
-    lever.classList.add('pulling', 'pulling-disabled');
-    lever.style.pointerEvents = 'none';
-    pointerArrow.classList.add('is-flicking');
+ function spinWheel() {
+            // VERIFICAÇÃO DE CRÉDITOS PRIMEIRO
+            if (totalCredits < costPerSpin) {
+                if (!isSpinning) { // Só mostra a mensagem se não estiver já a girar
+                    quoteTextElement.textContent = "Oh não! Sem créditos suficientes para jogar!";
+                    quoteBoard.classList.remove('show-quote'); // Força reset da animação
+                    setTimeout(() => quoteBoard.classList.add('show-quote'), 10); // Reativa para mostrar
+                }
+                return; // Não faz nada se não houver créditos
+            }
 
-    // ESCONDER A FRASE ATUAL QUANDO A ROLETA COMEÇA A GIRAR
-    quoteBoard.classList.remove('show-quote');
-    quoteBoard.style.opacity = '0';
-    quoteBoard.style.transform = 'scale(0.9) rotateX(10deg)';
+            if (isSpinning) {
+                return;
+            }
 
+            // DEDUZIR CRÉDITOS E ATUALIZAR GASTOS
+            totalCredits -= costPerSpin;
+            totalSpent += costPerSpin;
+            updateDisplay();
+            showMoneyAnimation(); // Mostrar animação dos $$$
 
-    const randomDurationSeconds = Math.random() * 3 + 4;
-    const spinDurationMs = randomDurationSeconds * 1000;
-    const additionalFullSpins = Math.floor(Math.random() * 4) + 3;
+            isSpinning = true;
+            lever.classList.add('pulling', 'pulling-disabled'); // 'pulling-disabled' é redundante aqui por causa do updateDisplay, mas não faz mal
+            lever.style.pointerEvents = 'none';
+            pointerArrow.classList.add('is-flicking');
 
-    let targetRotation = (Math.floor(currentAbsoluteRotation / 360) + additionalFullSpins) * 360 + FINAL_IMAGE_OFFSET_FOR_COFFEE;
+            quoteBoard.classList.remove('show-quote');
+            quoteBoard.style.opacity = '0';
+            quoteBoard.style.transform = 'scale(0.9) rotateX(10deg)';
 
-    if (targetRotation <= currentAbsoluteRotation) {
-        targetRotation += 360;
-    }
-    if ( (targetRotation - currentAbsoluteRotation) < 360 && (currentAbsoluteRotation % 360 === FINAL_IMAGE_OFFSET_FOR_COFFEE) ) {
-         targetRotation += 360;
-    }
+            const randomDurationSeconds = Math.random() * 3 + 4;
+            const spinDurationMs = randomDurationSeconds * 1000;
+            const additionalFullSpins = Math.floor(Math.random() * 4) + 3;
 
-    currentAbsoluteRotation = targetRotation;
+            let targetRotation = (Math.floor(currentAbsoluteRotation / 360) + additionalFullSpins) * 360 + FINAL_IMAGE_OFFSET_FOR_COFFEE;
 
-    wheel.style.transition = `transform ${spinDurationMs / 1000}s cubic-bezier(0.33, 1, 0.68, 1)`;
-    wheel.style.transform = `rotate(${currentAbsoluteRotation}deg)`;
+            if (targetRotation <= currentAbsoluteRotation) {
+                targetRotation += 360;
+            }
+            if ( (targetRotation - currentAbsoluteRotation) < 360 && (currentAbsoluteRotation % 360 === FINAL_IMAGE_OFFSET_FOR_COFFEE) ) {
+                 targetRotation += 360;
+            }
 
-    playPegClicks(spinDurationMs);
+            currentAbsoluteRotation = targetRotation;
 
-    setTimeout(() => {
-        lever.classList.remove('pulling');
-    }, spinDurationMs - 300 > 0 ? spinDurationMs - 300 : 50);
+            wheel.style.transition = `transform ${spinDurationMs / 1000}s cubic-bezier(0.33, 1, 0.68, 1)`;
+            wheel.style.transform = `rotate(${currentAbsoluteRotation}deg)`;
 
-    wheel.addEventListener('transitionend', () => {
-        isSpinning = false;
-        lever.classList.remove('pulling-disabled');
-        lever.style.pointerEvents = 'auto';
-        pointerArrow.classList.remove('is-flicking');
-        pointerArrow.style.transform = 'translateY(-50%) rotate(0deg)';
+            playPegClicks(spinDurationMs);
 
-        // MOSTRAR NOVA FRASE QUANDO A ROLETA PARA
-        showNewQuote();
+            setTimeout(() => {
+                lever.classList.remove('pulling');
+            }, spinDurationMs - 300 > 0 ? spinDurationMs - 300 : 50);
 
-        if (clickIntervalId) {
-            clearInterval(clickIntervalId);
-            clickIntervalId = null;
+            wheel.addEventListener('transitionend', () => {
+                isSpinning = false;
+                // lever.classList.remove('pulling-disabled'); // Controlado por updateDisplay
+                lever.style.pointerEvents = 'auto';
+                pointerArrow.classList.remove('is-flicking');
+                pointerArrow.style.transform = 'translateY(-50%) rotate(0deg)';
+                updateDisplay(); // Atualiza estado da alavanca caso os créditos tenham acabado
+                showNewQuote();
+
+                if (clickIntervalId) {
+                    clearInterval(clickIntervalId);
+                    clickIntervalId = null;
+                }
+            }, { once: true });
         }
-    }, { once: true });
-}
 
-lever.addEventListener('click', () => {
-    if (!lever.classList.contains('pulling-disabled')) {
-        spinWheel();
-    }
-});
-lever.addEventListener('mousedown', () => {
-    if (!lever.classList.contains('pulling-disabled')) {
-        lever.classList.add('pulling');
-    }
-});
-lever.addEventListener('mouseup', () => {
-     lever.classList.remove('pulling');
-});
-lever.addEventListener('mouseleave', () => {
-     lever.classList.remove('pulling');
-});
+        lever.addEventListener('click', () => {
+            // A verificação principal de créditos e isSpinning é feita no início de spinWheel()
+             if (!lever.classList.contains('pulling-disabled') && !isSpinning) { // Dupla verificação para ser seguro
+                spinWheel();
+            }
+        });
+        lever.addEventListener('mousedown', () => {
+            if (!lever.classList.contains('pulling-disabled') && !isSpinning) {
+                lever.classList.add('pulling');
+            }
+        });
+        lever.addEventListener('mouseup', () => {
+             lever.classList.remove('pulling');
+        });
+         lever.addEventListener('mouseleave', () => {
+             lever.classList.remove('pulling');
+        });
 
-// Inicializa a taboleta com uma mensagem
-quoteTextElement.textContent = "Puxe a alavanca para uma mensagem de aniversário!";
-quoteBoard.classList.add('show-quote'); // Mostra a mensagem inicial
-
-
-const imgWheel = new Image();
-imgWheel.src = 'aniversariante.png';
-imgWheel.onload = () => console.log('Imagem da roleta carregada.');
-imgWheel.onerror = () => {
-    console.error('Erro ao carregar aniversariante.png.');
-    wheel.alt = "Erro ao carregar imagem";
-}
+        // Inicialização quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDisplay(); // Mostra os créditos iniciais e estado da alavanca
+            quoteTextElement.textContent = "Puxe a alavanca para uma mensagem de aniversário!";
+            quoteBoard.classList.add('show-quote');
+        });
 
 const imgArrow = new Image();
 imgArrow.src = 'seta_feira.png';

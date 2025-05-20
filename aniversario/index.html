@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aniversário do Carlos - Roleta da Sorte</title>
+    <title>Aniversário do Carlos -Roleta da Sorte</title>
     <style>
         body {
             display: flex;
@@ -125,10 +125,53 @@
              transform: rotateX(30deg) rotateY(-5deg) translateY(5px);
         }
 
+        .main-title {
+    font-size: 3em; /* Tamanho grande */
+    color: #f1c40f; /* Amarelo/Dourado */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Sombra para destaque */
+    margin-bottom: 20px; /* Espaço antes da roleta */
+    font-family: 'Arial Black', Gadget, sans-serif; /* Uma fonte mais "bold" */
+    text-align: center;
+}
+
+#quote-board-container {
+    margin-top: 30px; /* Espaço depois da área do jogo */
+    width: 80%;
+    max-width: 600px; /* Largura máxima da taboleta */
+    perspective: 500px; /* Para um leve efeito 3D na transição */
+}
+
+#quote-board {
+    background-color: #8B4513; /* Cor de madeira escura (SaddleBrown) */
+    color: #FFF8DC; /* Cor de texto tipo "pergaminho" (Cornsilk) */
+    padding: 20px 30px;
+    border-radius: 10px;
+    border: 5px solid #A0522D; /* Borda tipo madeira mais clara (Sienna) */
+    box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.3);
+    text-align: center;
+    min-height: 80px; /* Altura mínima para evitar colapso */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out; /* Para animação da frase */
+    font-family: 'Georgia', serif; /* Uma fonte mais clássica para quotes */
+    font-size: 1.1em;
+}
+
+#quote-board.show-quote {
+    transform: scale(1.05) rotateX(0deg); /* Pequeno zoom e rotação para efeito */
+    opacity: 1;
+}
+
+#quote-board p {
+    margin: 0;
+    line-height: 1.5;
+}
+
     </style>
 </head>
 <body>
-
+<h1 class="main-title">Calha Sempre!</h1>
     <div class="game-area">
         <div class="wheel-container">
             <!-- Substituir o div .pointer pela imagem da seta -->
@@ -144,13 +187,64 @@
         </div>
     </div>
 
+        <div id="quote-board-container">
+        <div id="quote-board">
+            <p id="quote-text">Puxe a alavanca para uma mensagem inspiradora!</p>
+        </div>
+    </div>
+
     <script>
         const wheel = document.getElementById('spinning-wheel');
         const lever = document.getElementById('lever');
         const pointerArrow = document.getElementById('pointer-arrow'); // Referência para a imagem da seta
+        const quoteTextElement = document.getElementById('quote-text');
+        const quoteBoard = document.getElementById('quote-board'); 
+
+            // LISTA DE FRASES
+    const birthdayQuotes = [
+        "A idade é apenas o número de anos que o mundo tem desfrutado de você. Feliz aniversário!",
+        "Envelhecer é obrigatório, mas crescer é opcional. Continue jovem de espírito!",
+        "Que cada vela no seu bolo seja um desejo realizado. Parabéns!",
+        "A vida é uma jornada e os aniversários são as paradas para celebrar. Aproveite a sua!",
+        "Conte a sua idade pelos amigos, não pelos anos. Conte a sua vida pelos sorrisos, não pelas lágrimas.",
+        "A felicidade não tem idade. Que a sua seja eterna!",
+        "A sabedoria vem com os invernos. E você está cada vez mais sábio!",
+        "Que a longevidade lhe traga ainda mais alegrias e realizações.",
+        "Envelhecer é como escalar uma grande montanha: enquanto se sobe, as forças diminuem, mas o olhar é mais livre, a vista mais ampla e serena.",
+        "Não lamente o envelhecer, é um privilégio negado a muitos.",
+        "A cada ano, uma nova página de sabedoria é escrita no livro da vida.",
+        "A juventude não é uma época da vida, é um estado de espírito.",
+        "O segredo da longevidade é comer a metade, andar o dobro e rir o triplo.",
+        "Felicidade é ter algo o que fazer, ter algo que amar e algo que esperar... em qualquer idade!",
+        "Os anos podem enrugar a pele, mas renunciar ao entusiasmo enruga a alma.",
+        "Viva cada dia como se fosse o último, e celebre cada aniversário como se fosse o primeiro.",
+        "A idade de ouro é aquela em que nos sentimos bem connosco próprios.",
+        "Que a sua jornada seja longa, feliz e cheia de momentos inesquecíveis.",
+        "A beleza do envelhecimento está na riqueza das experiências acumuladas.",
+        "Não adicione anos à sua vida, mas vida aos seus anos!",
+        "Sábio é aquele que aprende com a experiência dos anos.",
+        "A felicidade consiste em partilhar as pequenas e as grandes coisas com as pessoas que amamos. E isso não tem idade!",
+        "A melhor idade é estar vivo, saudável e feliz.",
+        "Com o tempo, descobrimos que o essencial é invisível aos olhos, mas sentido no coração. Feliz aniversário!",
+        "Que a sua sabedoria continue a iluminar o caminho de muitos. Parabéns!",
+        "A idade adiciona sabor à vida, como o tempo ao bom vinho.",
+        "A velhice bem vivida é um tesouro de experiências.",
+        "Sorria! Hoje é um dia especial, mais um ano de sabedoria e felicidade.",
+        "Desejo-lhe um aniversário repleto de paz, amor e muitos momentos felizes.",
+        "Lembre-se: você não está a ficar mais velho, está a ficar mais experiente e interessante!",
+        "Que a alegria acompanhe você por todos os momentos e que Deus continue guiando todos os seus passos e iluminando cada vez mais os seus pensamentos.",
+        "A vida é uma dádiva. Celebre cada momento dela!",
+        "A maturidade nos ensina a apreciar as coisas simples da vida. Feliz aniversário!",
+        "Que este novo ciclo traga ainda mais motivos para sorrir e agradecer.",
+        "Envelhecer com graça é uma arte. E você é um artista!"
+        // Adicione quantas frases quiser aqui!
+    ];
+
+    
 
         let isSpinning = false;
         let currentAbsoluteRotation = 0;
+        let lastQuoteIndex = -1;
 
         const POINTER_TARGET_ANGLE_ON_SCREEN = 270;
         // VALOR AJUSTADO COM BASE NO SEU FEEDBACK ANTERIOR.
@@ -188,88 +282,129 @@
             scheduleClick();
         }
 
-        function spinWheel() {
-            if (isSpinning) {
-                return;
-            }
-            isSpinning = true;
-            lever.classList.add('pulling', 'pulling-disabled');
-            lever.style.pointerEvents = 'none';
-            pointerArrow.classList.add('is-flicking'); // Inicia a animação da seta
+        function showNewQuote() {
+    let randomIndex;
+    // Garante que a nova frase não é a mesma que a anterior (se houver mais de uma frase)
+    if (birthdayQuotes.length > 1) {
+        do {
+            randomIndex = Math.floor(Math.random() * birthdayQuotes.length);
+        } while (randomIndex === lastQuoteIndex);
+    } else {
+        randomIndex = 0; // Se só tiver uma frase, mostra sempre essa
+    }
 
-            const randomDurationSeconds = Math.random() * 3 + 4;
-            const spinDurationMs = randomDurationSeconds * 1000;
-            const additionalFullSpins = Math.floor(Math.random() * 4) + 3;
+    lastQuoteIndex = randomIndex;
+    const newQuote = birthdayQuotes[randomIndex];
 
-            let targetRotation = (Math.floor(currentAbsoluteRotation / 360) + additionalFullSpins) * 360 + FINAL_IMAGE_OFFSET_FOR_COFFEE;
-
-            if (targetRotation <= currentAbsoluteRotation) {
-                targetRotation += 360;
-            }
-            if ( (targetRotation - currentAbsoluteRotation) < 360 && (currentAbsoluteRotation % 360 === FINAL_IMAGE_OFFSET_FOR_COFFEE) ) {
-                 targetRotation += 360;
-            }
-
-            currentAbsoluteRotation = targetRotation;
-
-            wheel.style.transition = `transform ${spinDurationMs / 1000}s cubic-bezier(0.33, 1, 0.68, 1)`;
-            wheel.style.transform = `rotate(${currentAbsoluteRotation}deg)`;
-
-            playPegClicks(spinDurationMs);
-
-            setTimeout(() => {
-                lever.classList.remove('pulling');
-            }, spinDurationMs - 300 > 0 ? spinDurationMs - 300 : 50);
-
-            wheel.addEventListener('transitionend', () => {
-                isSpinning = false;
-                lever.classList.remove('pulling-disabled');
-                lever.style.pointerEvents = 'auto';
-                pointerArrow.classList.remove('is-flicking'); // Para a animação da seta
-                // Garante que a seta volta à posição neutra se a animação for interrompida
-                pointerArrow.style.transform = 'translateY(-50%) rotate(0deg)';
+    // Animação de saída da frase antiga (opcional, mas dá um efeito melhor)
+    quoteBoard.classList.remove('show-quote');
+    quoteBoard.style.opacity = '0';
+    quoteBoard.style.transform = 'scale(0.9) rotateX(10deg)';
 
 
-                if (clickIntervalId) {
-                    clearInterval(clickIntervalId);
-                    clickIntervalId = null;
-                }
-            }, { once: true });
+    setTimeout(() => {
+        quoteTextElement.textContent = newQuote;
+        // Animação de entrada da nova frase
+        quoteBoard.style.opacity = '1';
+        quoteBoard.style.transform = 'scale(1) rotateX(0deg)'; // Posição normal
+        quoteBoard.classList.add('show-quote'); // Adiciona a classe para o efeito de "destaque"
+    }, 300); // Tempo para a animação de saída antes de trocar o texto (metade da transição CSS)
+}
+
+function spinWheel() {
+    if (isSpinning) {
+        return;
+    }
+    isSpinning = true;
+    lever.classList.add('pulling', 'pulling-disabled');
+    lever.style.pointerEvents = 'none';
+    pointerArrow.classList.add('is-flicking');
+
+    // ESCONDER A FRASE ATUAL QUANDO A ROLETA COMEÇA A GIRAR
+    quoteBoard.classList.remove('show-quote');
+    quoteBoard.style.opacity = '0';
+    quoteBoard.style.transform = 'scale(0.9) rotateX(10deg)';
+
+
+    const randomDurationSeconds = Math.random() * 3 + 4;
+    const spinDurationMs = randomDurationSeconds * 1000;
+    const additionalFullSpins = Math.floor(Math.random() * 4) + 3;
+
+    let targetRotation = (Math.floor(currentAbsoluteRotation / 360) + additionalFullSpins) * 360 + FINAL_IMAGE_OFFSET_FOR_COFFEE;
+
+    if (targetRotation <= currentAbsoluteRotation) {
+        targetRotation += 360;
+    }
+    if ( (targetRotation - currentAbsoluteRotation) < 360 && (currentAbsoluteRotation % 360 === FINAL_IMAGE_OFFSET_FOR_COFFEE) ) {
+         targetRotation += 360;
+    }
+
+    currentAbsoluteRotation = targetRotation;
+
+    wheel.style.transition = `transform ${spinDurationMs / 1000}s cubic-bezier(0.33, 1, 0.68, 1)`;
+    wheel.style.transform = `rotate(${currentAbsoluteRotation}deg)`;
+
+    playPegClicks(spinDurationMs);
+
+    setTimeout(() => {
+        lever.classList.remove('pulling');
+    }, spinDurationMs - 300 > 0 ? spinDurationMs - 300 : 50);
+
+    wheel.addEventListener('transitionend', () => {
+        isSpinning = false;
+        lever.classList.remove('pulling-disabled');
+        lever.style.pointerEvents = 'auto';
+        pointerArrow.classList.remove('is-flicking');
+        pointerArrow.style.transform = 'translateY(-50%) rotate(0deg)';
+
+        // MOSTRAR NOVA FRASE QUANDO A ROLETA PARA
+        showNewQuote();
+
+        if (clickIntervalId) {
+            clearInterval(clickIntervalId);
+            clickIntervalId = null;
         }
+    }, { once: true });
+}
 
-        lever.addEventListener('click', () => {
-            if (!lever.classList.contains('pulling-disabled')) {
-                spinWheel();
-            }
-        });
-        lever.addEventListener('mousedown', () => {
-            if (!lever.classList.contains('pulling-disabled')) {
-                lever.classList.add('pulling');
-            }
-        });
-        lever.addEventListener('mouseup', () => {
-             lever.classList.remove('pulling');
-        });
-         lever.addEventListener('mouseleave', () => {
-             lever.classList.remove('pulling');
-        });
+lever.addEventListener('click', () => {
+    if (!lever.classList.contains('pulling-disabled')) {
+        spinWheel();
+    }
+});
+lever.addEventListener('mousedown', () => {
+    if (!lever.classList.contains('pulling-disabled')) {
+        lever.classList.add('pulling');
+    }
+});
+lever.addEventListener('mouseup', () => {
+     lever.classList.remove('pulling');
+});
+lever.addEventListener('mouseleave', () => {
+     lever.classList.remove('pulling');
+});
 
-        const imgWheel = new Image();
-        imgWheel.src = 'aniversariante.png';
-        imgWheel.onload = () => console.log('Imagem da roleta carregada.');
-        imgWheel.onerror = () => {
-            console.error('Erro ao carregar aniversariante.png.');
-            wheel.alt = "Erro ao carregar imagem";
-        }
+// Inicializa a taboleta com uma mensagem
+quoteTextElement.textContent = "Puxe a alavanca para uma mensagem de aniversário!";
+quoteBoard.classList.add('show-quote'); // Mostra a mensagem inicial
 
-        const imgArrow = new Image();
-        imgArrow.src = 'seta_feira.png'; // Precarrega a imagem da seta
-        imgArrow.onload = () => console.log('Imagem da seta carregada.');
-        imgArrow.onerror = () => {
-            console.error('Erro ao carregar seta_feira.png. Verifique o nome e o local do ficheiro.');
-            pointerArrow.alt = "Erro seta";
-        }
-    </script>
+
+const imgWheel = new Image();
+imgWheel.src = 'aniversariante.png';
+imgWheel.onload = () => console.log('Imagem da roleta carregada.');
+imgWheel.onerror = () => {
+    console.error('Erro ao carregar aniversariante.png.');
+    wheel.alt = "Erro ao carregar imagem";
+}
+
+const imgArrow = new Image();
+imgArrow.src = 'seta_feira.png';
+imgArrow.onload = () => console.log('Imagem da seta carregada.');
+imgArrow.onerror = () => {
+    console.error('Erro ao carregar seta_feira.png.');
+    pointerArrow.alt = "Erro seta";
+}
+</script>
 
 </body>
 </html>

@@ -112,75 +112,85 @@
                 <!-- Project Description -->
                 <div class="bg-base p-4 rounded-4 shadow-effect mb-4" data-aos="fade-up" data-aos-delay="300">
                     <h3>Project Overview</h3>
-                    <p>The Barcodigo Project is a sophisticated financial document automation solution developed during my professional traineeship at a leading wire drawing industry company. This innovative system addresses the critical need for streamlining financial document processing workflows, particularly for invoice management and document validation processes.</p>
-                    
-                    <p>The system was designed to solve real-world challenges in financial document handling, where manual processes were time-consuming, error-prone, and inefficient. By implementing intelligent barcode detection and automated placement algorithms, the project successfully transformed a manual workflow into a fully automated process.</p>
-                    
-                    <p>The core functionality revolves around receiving PDF documents as input, analyzing document structure and layout, processing barcode information, and intelligently determining optimal placement areas for barcode stamping. This automation dramatically reduces processing time from hours to minutes while maintaining high accuracy standards.</p>
+                    <h2>Problem:</h2>
+                    <p>The previous workflow required physically printing financial documents (if not already printed), generating barcode stickers, manually affixing them to the paper, conducting subsequent validation, and then re-digitizing the documents for further processing.</p>
+                    <h2>Solution:</h2>
+                    <p>An Algorithm that receives a financial document, and a barcode that identifies the document, then it analyses the document to find an empty space where it can place the barcode, (if no space available it goes to a queue for a human operator fits into a good spot) then saves the PDF for later validation by a professional, all this is done pretty much automatically with minimal human interaction</p>
                 </div>
 
                 <!-- How It Works -->
-                <div class="bg-base p-4 rounded-4 shadow-effect mb-4" data-aos="fade-up" data-aos-delay="400">
-                    <h3>System Architecture & Workflow</h3>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5><i class="fas fa-file-pdf text-brand me-2"></i>Document Processing Pipeline</h5>
-                            <p>The application features a multi-layered architecture with PDF document parsing, multi-page navigation, and real-time preview capabilities using WebView integration for seamless document handling.</p>
-                            
-                            <h5><i class="fas fa-barcode text-brand me-2"></i>Barcode Generation System</h5>
-                            <p>Dual barcode generation system supporting Code128 barcodes via Barcode4J library and QR codes through Google ZXing, with canvas-based rendering for high-quality output.</p>
+                <!-- Collapsible: System Architecture & Workflow -->
+                <button class="btn btn-outline-light mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseArchitecture" aria-expanded="false" aria-controls="collapseArchitecture">
+                    Extra detailed infos - System Architecture & Workflow
+                </button>
+                <div class="collapse" id="collapseArchitecture">
+                    <div class="bg-base p-4 rounded-4 shadow-effect mb-4" data-aos="fade-up" data-aos-delay="400">
+                        <h3>System Architecture & Workflow</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-file-pdf text-brand me-2"></i>Document Processing Pipeline</h5>
+                                <p>The application features a multi-layered architecture with PDF document parsing, multi-page navigation, and real-time preview capabilities using WebView integration for seamless document handling.</p>
+                                
+                                <h5><i class="fas fa-barcode text-brand me-2"></i>Barcode Generation System</h5>
+                                <p>Dual barcode generation system supporting Code128 barcodes via Barcode4J library and QR codes through Google ZXing, with canvas-based rendering for high-quality output.</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-search text-brand me-2"></i>Computer Vision Integration</h5>
+                                <p>OpenCV-powered white space detection algorithms analyze document layout to identify optimal placement zones for barcodes and digital signatures automatically.</p>
+                                
+                                <h5><i class="fas fa-stamp text-brand me-2"></i>Multi-Canvas Management</h5>
+                                <p>Sophisticated canvas controller manages multiple layers with drag-and-drop functionality, enabling precise positioning and complex document composition with collision detection.</p>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <h5><i class="fas fa-search text-brand me-2"></i>Computer Vision Integration</h5>
-                            <p>OpenCV-powered white space detection algorithms analyze document layout to identify optimal placement zones for barcodes and digital signatures automatically.</p>
-                            
-                            <h5><i class="fas fa-stamp text-brand me-2"></i>Multi-Canvas Management</h5>
-                            <p>Sophisticated canvas controller manages multiple layers with drag-and-drop functionality, enabling precise positioning and complex document composition with collision detection.</p>
+                        
+                        <div class="mt-3">
+                            <h5><i class="fas fa-cogs text-brand me-2"></i>Three Operation Modes</h5>
+                            <p>The application supports Editor mode for interactive document editing, STAMP mode for automated barcode placement, and SIGN mode for digital signature integration with metadata embedding.</p>
                         </div>
-                    </div>
-                    
-                    <div class="mt-3">
-                        <h5><i class="fas fa-cogs text-brand me-2"></i>Three Operation Modes</h5>
-                        <p>The application supports Editor mode for interactive document editing, STAMP mode for automated barcode placement, and SIGN mode for digital signature integration with metadata embedding.</p>
                     </div>
                 </div>
 
-                <!-- Technologies Used -->
-                <div class="bg-base p-4 rounded-4 shadow-effect mb-4" data-aos="fade-up" data-aos-delay="500">
-                    <h3>Technologies & Implementation</h3>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5>Core Technologies</h5>
-                            <ul>
-                                <li><strong>Java 17+:</strong> Primary development language with modern language features</li>
-                                <li><strong>JavaFX:</strong> Modern desktop GUI framework for rich user interface</li>
-                                <li><strong>Apache PDFBox:</strong> PDF document parsing, manipulation, and rendering</li>
-                                <li><strong>Barcode4J:</strong> Classic barcode generation library for Code128 format</li>
-                                <li><strong>Google ZXing:</strong> QR code generation and processing library</li>
-                                <li><strong>OpenCV:</strong> Computer vision for white space detection and image processing</li>
-                            </ul>
+                <!-- Collapsible: Technologies & Implementation -->
+                <button class="btn btn-outline-light mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTech" aria-expanded="false" aria-controls="collapseTech">
+                    Extra detailed infos - Technologies & Implementation
+
+                </button>
+                <div class="collapse" id="collapseTech">
+                    <div class="bg-base p-4 rounded-4 shadow-effect mb-4" data-aos="fade-up" data-aos-delay="500">
+                        <h3>Technologies & Implementation</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Core Technologies</h5>
+                                <ul>
+                                    <li><strong>Java 17+:</strong> Primary development language with modern language features</li>
+                                    <li><strong>JavaFX:</strong> Modern desktop GUI framework for rich user interface</li>
+                                    <li><strong>Apache PDFBox:</strong> PDF document parsing, manipulation, and rendering</li>
+                                    <li><strong>Barcode4J:</strong> Classic barcode generation library for Code128 format</li>
+                                    <li><strong>Google ZXing:</strong> QR code generation and processing library</li>
+                                    <li><strong>OpenCV:</strong> Computer vision for white space detection and image processing</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Development Tools</h5>
+                                <ul>
+                                    <li><strong>IntelliJ IDEA:</strong> Integrated development environment</li>
+                                    <li><strong>JavaFX Scene Builder:</strong> Visual interface design tool</li>
+                                    <li><strong>Module System:</strong> Java Platform Module System (JPMS)</li>
+                                </ul>
+                                <h5>Architecture Paradigm</h5>
+                                <ul>
+                                    <li><strong>Object-Oriented Programming:</strong> Core development paradigm</li>
+                                </ul>
+                                <h5>Design Pattern</h5>
+                                <ul>
+                                    <li><strong>MVC Pattern:</strong> Model-View-Controller architecture implementation</li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <h5>Development Tools</h5>
-                            <ul>
-                                <li><strong>IntelliJ IDEA:</strong> Integrated development environment</li>
-                                <li><strong>JavaFX Scene Builder:</strong> Visual interface design tool</li>
-                                <li><strong>Module System:</strong> Java Platform Module System (JPMS)</li>
-                            </ul>
-                            <h5>Architecture Paradigm</h5>
-                            <ul>
-                                <li><strong>Object-Oriented Programming:</strong> Core development paradigm</li>
-                            </ul>
-                            <h5>Design Pattern</h5>
-                            <ul>
-                                <li><strong>MVC Pattern:</strong> Model-View-Controller architecture implementation</li>
-                            </ul>
+                        <div class="mt-3">
+                            <h5>Development Methodology</h5>
+                            <p class="small">The project utilized a module-based development approach with Java Platform Module System (JPMS) for clean architecture separation. The development process emphasized object-oriented design principles with MVC pattern implementation, ensuring maintainable and scalable code structure. Performance optimizations included lazy loading for large PDF documents, canvas pooling for efficient memory management, and asynchronous rendering for responsive UI interactions.</p>
                         </div>
-                    </div>
-                    
-                    <div class="mt-3">
-                        <h5>Development Methodology</h5>
-                        <p>The project utilized a module-based development approach with Java Platform Module System (JPMS) for clean architecture separation. The development process emphasized object-oriented design principles with MVC pattern implementation, ensuring maintainable and scalable code structure. Performance optimizations included lazy loading for large PDF documents, canvas pooling for efficient memory management, and asynchronous rendering for responsive UI interactions.</p>
                     </div>
                 </div>
 
@@ -195,7 +205,7 @@
                         <li><strong>Project Type:</strong> Financial Document Automation</li>
                         <li><strong>Duration:</strong> 2 months (2024)</li>
                         <li><strong>Role:</strong> Software Development Trainee</li>
-                        <li><strong>Team Size:</strong> 3 developers</li>
+                        <li><strong>Team Size:</strong> 1 developer</li>
                         <li><strong>Status:</strong> Successfully Deployed</li>
                         <li><strong>Industry:</strong> Financial Services Technology</li>
                         <li><strong>Environment:</strong> Enterprise Production System</li>

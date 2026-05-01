@@ -867,14 +867,17 @@
       timePenaltyEverySeconds: 5
     };
 
-    const prizeTiers = [
-      { code: "A", name: "Abraço", icon: "🤗", threshold: 30 },
-      { code: "B", name: "Beijinho", icon: "😘", threshold: 80 },
-      { code: "C", name: "Café", icon: "☕", threshold: 140 },
-      { code: "D", name: "Cerveja", icon: "🍺", threshold: 210 },
-      { code: "E", name: "Bolo", icon: "🎂", threshold: 290 },
-      { code: "F", name: "Dia de Férias pago pela empresa", icon: "🏝️", threshold: 999 }
+    // Férias is always shown but threshold is intentionally impossible to reach.
+    const ALL_PRIZE_TIERS = [
+      { code: "A", name: "Abraço",   icon: "🤗", threshold: 20    },
+      { code: "B", name: "Beijinho", icon: "😘", threshold: 50    },
+      { code: "C", name: "Café",     icon: "☕", threshold: 80    },
+      { code: "D", name: "Cerveja",  icon: "🍺", threshold: 140   }, // only after 16:00
+      { code: "E", name: "Bolo",     icon: "🎂", threshold: 210   }, // only after 16:00, near-perfect play
+      { code: "F", name: "Dia de Férias pago pela empresa", icon: "🏝️", threshold: 99999 }, // never reachable
     ];
+    const CAFE_GUARANTEE = 80; // minimum prize a completed game always grants
+    let prizeTiers = [];
 
     function shuffle(arr) {
       const clone = [...arr];
@@ -1205,6 +1208,10 @@
 
         if (matches === pairCount) {
           stopTimer();
+          // Guarantee at least Café for every completed game.
+          if (score < CAFE_GUARANTEE) {
+            adjustScore(CAFE_GUARANTEE - score);
+          }
           const elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
           winText.innerHTML = `Completaste o modo 29 anos em ${moves} jogadas, ${formatTime(elapsedSeconds)}, com ${score} pontos!<br><span style="font-size:0.88em;opacity:0.78">Quanto mais jogos jogares, mais fotos novas vais ver.</span>`;
           setTimeout(showGallery, 700);
@@ -1239,6 +1246,12 @@
     function startGame() {
       pairCount = FIXED_PAIR_COUNT;
       fixedPairsEl.textContent = `${FIXED_PAIR_COUNT} pares`;
+      // Build the active tier list based on time of day.
+      // Before 16:00 → max is Café. From 16:00 onwards Cerveja and Bolo are unlockable.
+      // Férias (index 5) is always appended — visible but threshold is 99999, never reachable.
+      const gameHour = new Date().getHours();
+      const unlockable = gameHour >= 16 ? ALL_PRIZE_TIERS.slice(0, 5) : ALL_PRIZE_TIERS.slice(0, 3);
+      prizeTiers = [...unlockable, ALL_PRIZE_TIERS[5]];
       renderPrizeTrack();
       resetState();
       hideSpotlight();

@@ -64,6 +64,83 @@
       animation: dropIn 700ms ease-out both;
     }
 
+    .prize-strip {
+      z-index: 1;
+      position: relative;
+      margin: 0 0 1rem;
+      padding: 0.72rem 0.6rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.18));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .prize-title {
+      margin: 0 0 0.5rem;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: var(--ink-muted);
+      font-size: 0.8rem;
+    }
+
+    .prize-track {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.38rem;
+    }
+
+    .prize-tier {
+      min-width: 108px;
+      border-radius: 10px;
+      border: 1px dashed rgba(246, 223, 182, 0.48);
+      padding: 0.36rem 0.5rem;
+      background: rgba(20, 26, 38, 0.52);
+      display: grid;
+      gap: 0.1rem;
+      place-items: center;
+      transition: 180ms ease;
+    }
+
+    .prize-tier .code {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #f4d8ac;
+      letter-spacing: 0.08em;
+    }
+
+    .prize-tier .name {
+      text-align: center;
+      font-size: 0.8rem;
+      line-height: 1.2;
+      color: #e8dfcf;
+    }
+
+    .prize-tier .threshold {
+      font-size: 0.72rem;
+      color: #bcaf94;
+    }
+
+    .prize-tier.unlocked {
+      border-color: rgba(143, 214, 180, 0.9);
+      background: linear-gradient(180deg, rgba(143, 214, 180, 0.24), rgba(27, 46, 36, 0.58));
+    }
+
+    .prize-tier.current {
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 2px rgba(143, 214, 180, 0.42), 0 8px 18px rgba(0, 0, 0, 0.32);
+    }
+
+    .prize-arrow {
+      color: #f2c989;
+      font-weight: 800;
+      font-size: 0.84rem;
+      letter-spacing: 0.03em;
+    }
+
     .kicker {
       color: var(--accent-2);
       letter-spacing: 0.12em;
@@ -346,6 +423,92 @@
       min-height: 1.35rem;
     }
 
+    .gallery {
+      background: linear-gradient(180deg, #fff9ef, #f2dcba);
+      width: min(860px, 97vw);
+      color: #2a2214;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 54px rgba(0, 0, 0, 0.42);
+      transform: scale(0.94);
+      opacity: 0;
+      position: relative;
+    }
+
+    .overlay.active .gallery {
+      animation: spotlightZoom 900ms ease forwards;
+    }
+
+    .gallery-head {
+      padding: 0.78rem 3.2rem 0.68rem 1rem;
+      border-bottom: 1px solid rgba(49, 35, 15, 0.15);
+      background: linear-gradient(180deg, rgba(242, 196, 125, 0.35), rgba(255, 255, 255, 0));
+    }
+
+    .gallery-head h3 {
+      margin: 0;
+      font-size: 1.08rem;
+    }
+
+    .gallery-head p {
+      margin: 0.2rem 0 0;
+      color: #5a4a30;
+      font-size: 0.9rem;
+    }
+
+    .gallery-stage {
+      position: relative;
+      background: #111;
+      min-height: min(56vh, 460px);
+      display: grid;
+      place-items: center;
+    }
+
+    .gallery-stage img {
+      max-width: 100%;
+      max-height: min(56vh, 460px);
+      display: block;
+      object-fit: contain;
+      margin: 0 auto;
+    }
+
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 6;
+      border: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      color: #fff5e6;
+      background: rgba(19, 18, 15, 0.62);
+      cursor: pointer;
+    }
+
+    .slider-btn.prev {
+      left: 0.65rem;
+    }
+
+    .slider-btn.next {
+      right: 0.65rem;
+    }
+
+    .gallery-foot {
+      padding: 0.72rem 0.95rem 0.88rem;
+      text-align: center;
+      color: #4a3e29;
+      font-size: 0.95rem;
+    }
+
+    .counter {
+      font-weight: 700;
+      color: #2f2415;
+    }
+
     @keyframes cardIn {
       to {
         opacity: 1;
@@ -401,6 +564,11 @@
   <div class="grain" aria-hidden="true"></div>
 
   <main class="page">
+    <section class="prize-strip" aria-label="Prize ladder">
+      <p class="prize-title">A ==> B ==> C ==> D ==> E ==> F</p>
+      <div id="prizeTrack" class="prize-track"></div>
+    </section>
+
     <header class="header">
       <p class="kicker">29 years celebration</p>
       <h1>Nostalgic Memory Match</h1>
@@ -411,12 +579,13 @@
       <div class="pill">Moves <b id="moves">0</b></div>
       <div class="pill">Matches <b id="pairs">0</b></div>
       <div class="pill">Time <b id="timer">00:00</b></div>
+      <div class="pill">Score <b id="score">0</b></div>
+      <div class="pill">Prize <b id="currentPrize">None</b></div>
     </section>
 
     <div class="controls">
       <button id="newGame" type="button">New Game</button>
-      <button id="fewerCards" type="button">8 Pairs</button>
-      <button id="moreCards" type="button">12 Pairs</button>
+      <span class="pill" aria-live="polite">Fixed board <b id="fixedPairs">12 pairs</b></span>
     </div>
 
     <section id="board" class="board" aria-label="memory board"></section>
@@ -438,6 +607,25 @@
         <h2 id="spotlightTitle" class="spotlight-title">Memory Unlocked</h2>
         <p id="spotlightCaption" class="spotlight-caption"></p>
       </div>
+    </article>
+  </div>
+
+  <div id="galleryOverlay" class="overlay" aria-hidden="true">
+    <article class="gallery" role="dialog" aria-modal="true" aria-labelledby="galleryTitle">
+      <button id="closeGallery" class="close" aria-label="Close gallery">x</button>
+      <header class="gallery-head">
+        <h3 id="galleryTitle">Round Memories</h3>
+        <p>All photos used in this game board</p>
+      </header>
+      <section class="gallery-stage">
+        <button id="prevSlide" class="slider-btn prev" aria-label="Previous image"><</button>
+        <img id="galleryImage" alt="Round memory image" />
+        <button id="nextSlide" class="slider-btn next" aria-label="Next image">></button>
+      </section>
+      <footer class="gallery-foot">
+        <span id="galleryCounter" class="counter">1 / 1</span>
+        <div id="galleryCaption"></div>
+      </footer>
     </article>
   </div>
 
@@ -538,27 +726,60 @@
     };
 
     const board = document.getElementById("board");
+    const prizeTrack = document.getElementById("prizeTrack");
     const movesEl = document.getElementById("moves");
     const pairsEl = document.getElementById("pairs");
     const timerEl = document.getElementById("timer");
+    const scoreEl = document.getElementById("score");
+    const currentPrizeEl = document.getElementById("currentPrize");
     const winText = document.getElementById("winText");
     const overlay = document.getElementById("overlay");
     const spotlightImage = document.getElementById("spotlightImage");
     const spotlightCaption = document.getElementById("spotlightCaption");
     const closeOverlay = document.getElementById("closeOverlay");
+    const galleryOverlay = document.getElementById("galleryOverlay");
+    const closeGallery = document.getElementById("closeGallery");
+    const prevSlide = document.getElementById("prevSlide");
+    const nextSlide = document.getElementById("nextSlide");
+    const galleryImage = document.getElementById("galleryImage");
+    const galleryCounter = document.getElementById("galleryCounter");
+    const galleryCaption = document.getElementById("galleryCaption");
     const newGameBtn = document.getElementById("newGame");
-    const fewerCardsBtn = document.getElementById("fewerCards");
-    const moreCardsBtn = document.getElementById("moreCards");
+    const fixedPairsEl = document.getElementById("fixedPairs");
 
-    let pairCount = 10;
+    const FIXED_PAIR_COUNT = 12;
+    let pairCount = FIXED_PAIR_COUNT;
     let cards = [];
     let firstCard = null;
     let secondCard = null;
     let lockBoard = false;
     let moves = 0;
     let matches = 0;
+    let score = 0;
     let startTimestamp = 0;
     let timerId = null;
+    let lastTimePenaltyMark = 0;
+    let currentRoundImages = [];
+    let galleryIndex = 0;
+    let highestUnlockedTierIndex = -1;
+    let remainingImagePool = [];
+    let matchAudioContext = null;
+
+    const scoreRules = {
+      matchReward: 30,
+      missPenalty: 9,
+      timePenalty: 1,
+      timePenaltyEverySeconds: 5
+    };
+
+    const prizeTiers = [
+      { code: "A", name: "Hug", threshold: 30 },
+      { code: "B", name: "Kiss", threshold: 80 },
+      { code: "C", name: "Coffe", threshold: 140 },
+      { code: "D", name: "Beer", threshold: 210 },
+      { code: "E", name: "Cake", threshold: 290 },
+      { code: "F", name: "Dia de Férias pago pela empresa", threshold: 999 }
+    ];
 
     function shuffle(arr) {
       const clone = [...arr];
@@ -575,13 +796,84 @@
       return `${minutes}:${seconds}`;
     }
 
+    function refillImagePool(excluded = []) {
+      const excludedSet = new Set(excluded);
+      const candidates = availableImages.filter((img) => !excludedSet.has(img));
+      remainingImagePool = shuffle(candidates.length ? candidates : [...availableImages]);
+    }
+
+    function getNextRoundImages(count) {
+      const selected = [];
+
+      while (selected.length < count) {
+        if (!remainingImagePool.length) {
+          refillImagePool(selected);
+        }
+
+        const next = remainingImagePool.pop();
+        if (next && !selected.includes(next)) {
+          selected.push(next);
+        }
+      }
+
+      return selected;
+    }
+
+    function playMatchSound() {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+
+      try {
+        if (!matchAudioContext) {
+          matchAudioContext = new AudioCtx();
+        }
+        if (matchAudioContext.state === "suspended") {
+          matchAudioContext.resume();
+        }
+
+        const now = matchAudioContext.currentTime;
+        const tones = [523.25, 659.25, 783.99];
+
+        tones.forEach((freq, index) => {
+          const osc = matchAudioContext.createOscillator();
+          const gain = matchAudioContext.createGain();
+          const start = now + index * 0.08;
+          const end = start + 0.19;
+
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, start);
+
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.exponentialRampToValueAtTime(0.18, start + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, end);
+
+          osc.connect(gain);
+          gain.connect(matchAudioContext.destination);
+          osc.start(start);
+          osc.stop(end);
+        });
+      } catch {
+        // Silently ignore audio errors to avoid interrupting gameplay.
+      }
+    }
+
     function startTimer() {
       clearInterval(timerId);
       startTimestamp = Date.now();
+      lastTimePenaltyMark = 0;
       timerEl.textContent = "00:00";
       timerId = setInterval(() => {
         const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
         timerEl.textContent = formatTime(elapsed);
+
+        if (
+          elapsed > 0 &&
+          elapsed % scoreRules.timePenaltyEverySeconds === 0 &&
+          elapsed !== lastTimePenaltyMark
+        ) {
+          lastTimePenaltyMark = elapsed;
+          adjustScore(-scoreRules.timePenalty);
+        }
       }, 1000);
     }
 
@@ -595,9 +887,78 @@
       lockBoard = false;
       moves = 0;
       matches = 0;
+      score = 0;
+      highestUnlockedTierIndex = -1;
       movesEl.textContent = String(moves);
       pairsEl.textContent = String(matches);
+      scoreEl.textContent = String(score);
+      currentPrizeEl.textContent = "None";
       winText.textContent = "";
+      updatePrizeProgress();
+    }
+
+    function renderPrizeTrack() {
+      const nodes = [];
+      for (let i = 0; i < prizeTiers.length; i++) {
+        const tier = prizeTiers[i];
+        const el = document.createElement("div");
+        el.className = "prize-tier";
+        el.setAttribute("data-code", tier.code);
+        el.setAttribute("data-threshold", String(tier.threshold));
+        el.innerHTML = `
+          <span class="code">${tier.code}</span>
+          <span class="name">${tier.name}</span>
+          <span class="threshold">${tier.threshold}+ pts</span>
+        `;
+        nodes.push(el);
+        if (i < prizeTiers.length - 1) {
+          const arrow = document.createElement("span");
+          arrow.className = "prize-arrow";
+          arrow.textContent = "===>";
+          nodes.push(arrow);
+        }
+      }
+      prizeTrack.replaceChildren(...nodes);
+    }
+
+    function adjustScore(delta) {
+      score = Math.max(0, score + delta);
+      scoreEl.textContent = String(score);
+      updatePrizeProgress();
+    }
+
+    function updatePrizeProgress() {
+      const tierElements = prizeTrack.querySelectorAll(".prize-tier");
+      let currentLabel = "None";
+      let scoreTierIndex = -1;
+
+      for (let i = 0; i < prizeTiers.length; i++) {
+        if (score >= prizeTiers[i].threshold) {
+          scoreTierIndex = i;
+        }
+      }
+
+      highestUnlockedTierIndex = Math.max(highestUnlockedTierIndex, scoreTierIndex);
+
+      tierElements.forEach((el, index) => {
+        const threshold = Number(el.getAttribute("data-threshold"));
+        const code = el.getAttribute("data-code");
+        const unlocked = index <= highestUnlockedTierIndex;
+        el.classList.toggle("unlocked", unlocked);
+        el.classList.remove("current");
+        if (unlocked) {
+          const tier = prizeTiers.find((p) => p.code === code);
+          if (tier) currentLabel = `${tier.code} - ${tier.name}`;
+        }
+      });
+
+      if (highestUnlockedTierIndex >= 0) {
+        const currentCode = prizeTiers[highestUnlockedTierIndex].code;
+        const currentEl = prizeTrack.querySelector(`.prize-tier[data-code="${currentCode}"]`);
+        if (currentEl) currentEl.classList.add("current");
+      }
+
+      currentPrizeEl.textContent = currentLabel;
     }
 
     function getCaption(fileName) {
@@ -614,6 +975,39 @@
     function hideSpotlight() {
       overlay.classList.remove("active");
       overlay.setAttribute("aria-hidden", "true");
+    }
+
+    function renderGallerySlide() {
+      if (!currentRoundImages.length) return;
+      const fileName = currentRoundImages[galleryIndex];
+      galleryImage.src = `./game_images/${fileName}`;
+      galleryCaption.textContent = getCaption(fileName);
+      galleryCounter.textContent = `${galleryIndex + 1} / ${currentRoundImages.length}`;
+    }
+
+    function showGallery() {
+      if (!currentRoundImages.length) return;
+      galleryIndex = 0;
+      renderGallerySlide();
+      galleryOverlay.classList.add("active");
+      galleryOverlay.setAttribute("aria-hidden", "false");
+    }
+
+    function hideGallery() {
+      galleryOverlay.classList.remove("active");
+      galleryOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    function nextGallerySlide() {
+      if (!currentRoundImages.length) return;
+      galleryIndex = (galleryIndex + 1) % currentRoundImages.length;
+      renderGallerySlide();
+    }
+
+    function prevGallerySlide() {
+      if (!currentRoundImages.length) return;
+      galleryIndex = (galleryIndex - 1 + currentRoundImages.length) % currentRoundImages.length;
+      renderGallerySlide();
     }
 
     function updateGridDensity() {
@@ -669,6 +1063,8 @@
       if (isMatch) {
         firstCard.classList.add("matched");
         secondCard.classList.add("matched");
+        playMatchSound();
+        adjustScore(scoreRules.matchReward);
 
         matches += 1;
         pairsEl.textContent = String(matches);
@@ -682,12 +1078,14 @@
         if (matches === pairCount) {
           stopTimer();
           const elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
-          winText.textContent = `You completed 29 years mode in ${moves} moves and ${formatTime(elapsedSeconds)}.`;
+          winText.textContent = `You completed 29 years mode in ${moves} moves, ${formatTime(elapsedSeconds)}, score ${score}.`;
+          setTimeout(showGallery, 700);
         }
         return;
       }
 
       lockBoard = true;
+      adjustScore(-scoreRules.missPenalty);
       setTimeout(() => {
         firstCard.classList.remove("flipped");
         secondCard.classList.remove("flipped");
@@ -698,7 +1096,8 @@
     }
 
     function buildDeck() {
-      const chosen = shuffle(availableImages).slice(0, pairCount);
+      const chosen = getNextRoundImages(pairCount);
+      currentRoundImages = [...chosen];
       const deck = shuffle([...chosen, ...chosen]);
 
       cards = deck.map((fileName, index) => createCard(fileName, `${fileName}-${index}`, index * 18));
@@ -707,31 +1106,43 @@
     }
 
     function startGame() {
+      pairCount = FIXED_PAIR_COUNT;
+      fixedPairsEl.textContent = `${FIXED_PAIR_COUNT} pairs`;
+      renderPrizeTrack();
       resetState();
       hideSpotlight();
+      hideGallery();
       buildDeck();
       startTimer();
     }
 
     newGameBtn.addEventListener("click", startGame);
-    fewerCardsBtn.addEventListener("click", () => {
-      pairCount = 8;
-      startGame();
-    });
-    moreCardsBtn.addEventListener("click", () => {
-      pairCount = 12;
-      startGame();
-    });
 
     closeOverlay.addEventListener("click", hideSpotlight);
+    closeGallery.addEventListener("click", hideGallery);
+    nextSlide.addEventListener("click", nextGallerySlide);
+    prevSlide.addEventListener("click", prevGallerySlide);
+
     overlay.addEventListener("click", (event) => {
       if (event.target === overlay) hideSpotlight();
     });
+
+    galleryOverlay.addEventListener("click", (event) => {
+      if (event.target === galleryOverlay) hideGallery();
+    });
+
     window.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") hideSpotlight();
+      if (event.key === "Escape") {
+        hideSpotlight();
+        hideGallery();
+      }
+      if (!galleryOverlay.classList.contains("active")) return;
+      if (event.key === "ArrowRight") nextGallerySlide();
+      if (event.key === "ArrowLeft") prevGallerySlide();
     });
     window.addEventListener("resize", updateGridDensity);
 
+    refillImagePool();
     startGame();
   </script>
 </body>

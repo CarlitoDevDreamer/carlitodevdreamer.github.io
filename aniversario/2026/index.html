@@ -384,6 +384,36 @@
       object-fit: contain;
       display: block;
       margin: 0 auto;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .spotlight-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 0.7rem 0;
+    }
+
+    .spotlight-nav-btn {
+      background: rgba(20,18,14,0.72);
+      color: #f8f0e3;
+      border: none;
+      border-radius: 999px;
+      width: 36px;
+      height: 36px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .spotlight-nav-counter {
+      font-size: 0.88rem;
+      color: #6a5a3a;
+      font-weight: 700;
     }
 
     .spotlight-text {
@@ -446,7 +476,7 @@
     }
 
     .gallery-head {
-      padding: 0.78rem 3.2rem 0.68rem 1rem;
+      padding: 0.78rem 3.2rem 0.78rem 1rem;
       border-bottom: 1px solid rgba(49, 35, 15, 0.15);
       background: linear-gradient(180deg, rgba(242, 196, 125, 0.35), rgba(255, 255, 255, 0));
     }
@@ -460,6 +490,22 @@
       margin: 0.2rem 0 0;
       color: #5a4a30;
       font-size: 0.9rem;
+    }
+
+    .gallery-win-msg {
+      margin-top: 0.55rem;
+      font-size: clamp(0.88rem, 2.2vw, 0.96rem);
+      line-height: 1.5;
+      color: #3a2e18;
+      font-weight: 700;
+    }
+
+    .gallery-win-msg .hint {
+      display: block;
+      margin-top: 0.18rem;
+      font-size: 0.88em;
+      font-weight: 400;
+      opacity: 0.72;
     }
 
     .gallery-stage {
@@ -476,6 +522,20 @@
       display: block;
       object-fit: contain;
       margin: 0 auto;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+      cursor: zoom-in;
+    }
+
+    .gallery-stage {
+      position: relative;
+      background: #111;
+      min-height: min(56vh, 460px);
+      display: grid;
+      place-items: center;
+      cursor: zoom-in;
     }
 
     .slider-btn {
@@ -508,6 +568,10 @@
       text-align: center;
       color: #4a3e29;
       font-size: 0.95rem;
+    }
+
+    .gallery-win-msg {
+      display: none; /* kept for JS compat, actual display is in gallery-head now */
     }
 
     .counter {
@@ -686,7 +750,12 @@
     <article class="spotlight" role="dialog" aria-modal="true" aria-labelledby="spotlightTitle">
       <button id="closeOverlay" class="close" aria-label="Fechar destaque">x</button>
       <div class="spotlight-image">
-        <img id="spotlightImage" alt="Matched memory" />
+        <img id="spotlightImage" alt="Matched memory" draggable="false" oncontextmenu="return false" />
+      </div>
+      <div class="spotlight-nav" id="spotlightNav" style="display:none">
+        <button id="spotlightPrev" class="spotlight-nav-btn" aria-label="Imagem anterior">&lt;</button>
+        <span id="spotlightNavCounter" class="spotlight-nav-counter"></span>
+        <button id="spotlightNext" class="spotlight-nav-btn" aria-label="Próxima imagem">&gt;</button>
       </div>
       <div class="spotlight-text">
         <h2 id="spotlightTitle" class="spotlight-title">Memória Desbloqueada</h2>
@@ -701,11 +770,12 @@
       <header class="gallery-head">
         <h3 id="galleryTitle">Memórias da Ronda</h3>
         <p>Todas as fotos usadas neste jogo</p>
+        <div id="galleryWinMsg" class="gallery-win-msg" style="display:none"></div>
       </header>
-      <section class="gallery-stage">
-        <button id="prevSlide" class="slider-btn prev" aria-label="Imagem anterior"><</button>
-        <img id="galleryImage" alt="Memória da ronda" />
-        <button id="nextSlide" class="slider-btn next" aria-label="Próxima imagem">></button>
+      <section class="gallery-stage" id="galleryStage">
+        <button id="prevSlide" class="slider-btn prev" aria-label="Imagem anterior">&lt;</button>
+        <img id="galleryImage" alt="Memória da ronda" draggable="false" oncontextmenu="return false" />
+        <button id="nextSlide" class="slider-btn next" aria-label="Próxima imagem">&gt;</button>
       </section>
       <footer class="gallery-foot">
         <span id="galleryCounter" class="counter">1 / 1</span>
@@ -824,6 +894,10 @@
     const spotlightImage = document.getElementById("spotlightImage");
     const spotlightCaption = document.getElementById("spotlightCaption");
     const closeOverlay = document.getElementById("closeOverlay");
+    const spotlightNav = document.getElementById("spotlightNav");
+    const spotlightPrev = document.getElementById("spotlightPrev");
+    const spotlightNext = document.getElementById("spotlightNext");
+    const spotlightNavCounter = document.getElementById("spotlightNavCounter");
     const galleryOverlay = document.getElementById("galleryOverlay");
     const closeGallery = document.getElementById("closeGallery");
     const prevSlide = document.getElementById("prevSlide");
@@ -831,6 +905,7 @@
     const galleryImage = document.getElementById("galleryImage");
     const galleryCounter = document.getElementById("galleryCounter");
     const galleryCaption = document.getElementById("galleryCaption");
+    const galleryWinMsg = document.getElementById("galleryWinMsg");
     const newGameBtn = document.getElementById("newGame");
     const fixedPairsEl = document.getElementById("fixedPairs");
     const comboAlertEl = document.getElementById("comboAlert");
@@ -849,6 +924,7 @@
     let lastTimePenaltyMark = 0;
     let currentRoundImages = [];
     let galleryIndex = 0;
+    let spotlightGalleryMode = false; // true when opened from gallery click
     let highestUnlockedTierIndex = -1;
     let remainingImagePool = [];
     let matchAudioContext = null;
@@ -1075,9 +1151,21 @@
       return captions[fileName] || captions.default || "Memory unlocked!";
     }
 
-    function showSpotlight(fileName) {
-      spotlightImage.src = `./game_images/${fileName}`;
-      spotlightCaption.textContent = getCaption(fileName);
+    function showSpotlight(fileName, galleryMode = false) {
+      spotlightGalleryMode = galleryMode;
+      if (galleryMode) {
+        // sync spotlight index to current gallery index
+        spotlightImage.src = `./game_images/${currentRoundImages[galleryIndex]}`;
+        spotlightCaption.textContent = getCaption(currentRoundImages[galleryIndex]);
+        spotlightNavCounter.textContent = `${galleryIndex + 1} / ${currentRoundImages.length}`;
+        spotlightNav.style.display = "flex";
+        spotlightTitle.textContent = "Memórias da Ronda";
+      } else {
+        spotlightImage.src = `./game_images/${fileName}`;
+        spotlightCaption.textContent = getCaption(fileName);
+        spotlightNav.style.display = "none";
+        spotlightTitle.textContent = "Memória Desbloqueada";
+      }
       overlay.classList.add("active");
       overlay.setAttribute("aria-hidden", "false");
     }
@@ -1093,12 +1181,24 @@
       galleryImage.src = `./game_images/${fileName}`;
       galleryCaption.textContent = getCaption(fileName);
       galleryCounter.textContent = `${galleryIndex + 1} / ${currentRoundImages.length}`;
+      // keep spotlight in sync if open in gallery mode
+      if (spotlightGalleryMode && overlay.classList.contains("active")) {
+        spotlightImage.src = `./game_images/${fileName}`;
+        spotlightCaption.textContent = getCaption(fileName);
+        spotlightNavCounter.textContent = `${galleryIndex + 1} / ${currentRoundImages.length}`;
+      }
     }
 
-    function showGallery() {
+    function showGallery(winMsg) {
       if (!currentRoundImages.length) return;
       galleryIndex = 0;
       renderGallerySlide();
+      if (winMsg) {
+        galleryWinMsg.innerHTML = winMsg;
+        galleryWinMsg.style.display = "block";
+      } else {
+        galleryWinMsg.style.display = "none";
+      }
       galleryOverlay.classList.add("active");
       galleryOverlay.setAttribute("aria-hidden", "false");
     }
@@ -1213,8 +1313,9 @@
             adjustScore(CAFE_GUARANTEE - score);
           }
           const elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
-          winText.innerHTML = `Completaste o modo 29 anos em ${moves} jogadas, ${formatTime(elapsedSeconds)}, com ${score} pontos!<br><span style="font-size:0.88em;opacity:0.78">Quanto mais jogos jogares, mais fotos novas vais ver.</span>`;
-          setTimeout(showGallery, 700);
+          const winMsg = `Completaste o modo 29 anos em ${moves} jogadas, ${formatTime(elapsedSeconds)}, com ${score} pontos!<span class="hint">Quanto mais jogos jogares, mais fotos novas vais ver.</span>`;
+          winText.innerHTML = winMsg;
+          setTimeout(() => showGallery(winMsg), 700);
         }
         return;
       }
@@ -1266,6 +1367,26 @@
     closeGallery.addEventListener("click", hideGallery);
     nextSlide.addEventListener("click", nextGallerySlide);
     prevSlide.addEventListener("click", prevGallerySlide);
+
+    // Spotlight nav (gallery mode)
+    spotlightPrev.addEventListener("click", () => { prevGallerySlide(); });
+    spotlightNext.addEventListener("click", () => { nextGallerySlide(); });
+
+    // Click gallery image to open in spotlight zoom
+    document.getElementById("galleryStage").addEventListener("click", (e) => {
+      if (e.target.closest(".slider-btn")) return;
+      showSpotlight(null, true);
+    });
+
+    // Global right-click block on images
+    document.addEventListener("contextmenu", (e) => {
+      if (e.target.tagName === "IMG") e.preventDefault();
+    });
+
+    // Block drag on images
+    document.addEventListener("dragstart", (e) => {
+      if (e.target.tagName === "IMG") e.preventDefault();
+    });
 
     overlay.addEventListener("click", (event) => {
       if (event.target === overlay) hideSpotlight();

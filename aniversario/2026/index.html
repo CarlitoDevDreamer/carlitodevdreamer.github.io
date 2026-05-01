@@ -590,6 +590,72 @@
       font-size: 0.95rem;
     }
 
+    .prize-modal {
+      width: min(540px, 96vw);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fff9ef, #f2dcba);
+      color: #2a2214;
+      box-shadow: 0 24px 54px rgba(0, 0, 0, 0.42);
+      padding: 1rem 1rem 0.95rem;
+      transform: scale(0.94);
+      opacity: 0;
+    }
+
+    .overlay.active .prize-modal {
+      animation: spotlightZoom 900ms ease forwards;
+    }
+
+    .prize-modal h3 {
+      margin: 0;
+      font-size: clamp(1.08rem, 3vw, 1.35rem);
+    }
+
+    .prize-modal .subtitle {
+      margin: 0.35rem 0 0.7rem;
+      color: #5a4a30;
+      font-size: 0.93rem;
+    }
+
+    .prize-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.42rem;
+    }
+
+    .prize-item {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      border: 1px solid rgba(49, 35, 15, 0.16);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.26));
+      padding: 0.52rem 0.62rem;
+      font-weight: 700;
+      color: #3a2b14;
+    }
+
+    .prize-item .icon {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .prize-actions {
+      margin-top: 0.82rem;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .secondary-btn {
+      color: #f2ebdd;
+      background: linear-gradient(180deg, rgba(37, 32, 24, 0.9), rgba(28, 24, 18, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: none;
+    }
+
     .counter {
       font-weight: 700;
       color: #2f2415;
@@ -794,6 +860,18 @@
     </article>
   </div>
 
+  <div id="prizeOverlay" class="overlay" aria-hidden="true">
+    <article class="prize-modal" role="dialog" aria-modal="true" aria-labelledby="prizeTitle">
+      <h3 id="prizeTitle">Prémios Desbloqueados</h3>
+      <p id="prizeSubtitle" class="subtitle"></p>
+      <ul id="prizeList" class="prize-list"></ul>
+      <div class="prize-actions">
+        <button id="closePrizeModal" type="button" class="secondary-btn">Fechar</button>
+        <button id="openGalleryFromPrize" type="button">Ver galeria</button>
+      </div>
+    </article>
+  </div>
+
   <div id="comboAlert" class="combo-alert" aria-live="assertive"></div>
 
   <aside id="musicPrompt" class="music-prompt" aria-label="Sugestão de música" hidden>
@@ -918,6 +996,11 @@
     const galleryImage = document.getElementById("galleryImage");
     const galleryCounter = document.getElementById("galleryCounter");
     const galleryCaption = document.getElementById("galleryCaption");
+    const prizeOverlay = document.getElementById("prizeOverlay");
+    const prizeListEl = document.getElementById("prizeList");
+    const prizeSubtitleEl = document.getElementById("prizeSubtitle");
+    const closePrizeModalBtn = document.getElementById("closePrizeModal");
+    const openGalleryFromPrizeBtn = document.getElementById("openGalleryFromPrize");
     const newGameBtn = document.getElementById("newGame");
     const fixedPairsEl = document.getElementById("fixedPairs");
     const comboAlertEl = document.getElementById("comboAlert");
@@ -1202,6 +1285,37 @@
       galleryOverlay.setAttribute("aria-hidden", "true");
     }
 
+    function showPrizeModal() {
+      const unlocked = highestUnlockedTierIndex >= 0
+        ? prizeTiers.slice(0, highestUnlockedTierIndex + 1)
+        : [];
+
+      prizeSubtitleEl.textContent = `Pontuação final: ${score} pontos.`;
+
+      if (!unlocked.length) {
+        const li = document.createElement("li");
+        li.className = "prize-item";
+        li.textContent = "Ainda não desbloqueaste prémios nesta ronda.";
+        prizeListEl.replaceChildren(li);
+      } else {
+        const items = unlocked.map((tier) => {
+          const li = document.createElement("li");
+          li.className = "prize-item";
+          li.innerHTML = `<span class="icon">${tier.icon}</span><span>${tier.name}</span>`;
+          return li;
+        });
+        prizeListEl.replaceChildren(...items);
+      }
+
+      prizeOverlay.classList.add("active");
+      prizeOverlay.setAttribute("aria-hidden", "false");
+    }
+
+    function hidePrizeModal() {
+      prizeOverlay.classList.remove("active");
+      prizeOverlay.setAttribute("aria-hidden", "true");
+    }
+
     function nextGallerySlide() {
       if (!currentRoundImages.length) return;
       galleryIndex = (galleryIndex + 1) % currentRoundImages.length;
@@ -1305,7 +1419,7 @@
           const elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
           winText.innerHTML = `Completaste o modo 29 anos em ${moves} jogadas, ${formatTime(elapsedSeconds)}, com ${score} pontos!<br><span style="font-size:0.88em;opacity:0.78">Quanto mais jogos jogares, mais fotos novas vais ver.</span>`;
           board.querySelectorAll(".card.matched").forEach((el) => el.classList.add("game-over"));
-          setTimeout(showGallery, 700);
+          setTimeout(showPrizeModal, 520);
         }
         return;
       }
@@ -1341,6 +1455,7 @@
       resetState();
       hideSpotlight();
       hideGallery();
+      hidePrizeModal();
       buildDeck();
       startTimer();
     }
@@ -1389,6 +1504,11 @@
 
     closeOverlay.addEventListener("click", hideSpotlight);
     closeGallery.addEventListener("click", hideGallery);
+    closePrizeModalBtn.addEventListener("click", hidePrizeModal);
+    openGalleryFromPrizeBtn.addEventListener("click", () => {
+      hidePrizeModal();
+      showGallery();
+    });
     nextSlide.addEventListener("click", nextGallerySlide);
     prevSlide.addEventListener("click", prevGallerySlide);
 
@@ -1400,10 +1520,15 @@
       if (event.target === galleryOverlay) hideGallery();
     });
 
+    prizeOverlay.addEventListener("click", (event) => {
+      if (event.target === prizeOverlay) hidePrizeModal();
+    });
+
     window.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         hideSpotlight();
         hideGallery();
+        hidePrizeModal();
       }
       if (!galleryOverlay.classList.contains("active")) return;
       if (event.key === "ArrowRight") nextGallerySlide();

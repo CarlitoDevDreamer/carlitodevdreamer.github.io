@@ -230,13 +230,13 @@
       position: relative;
       display: grid;
       gap: clamp(0.45rem, 1.4vw, 0.8rem);
-      grid-template-columns: repeat(auto-fit, minmax(min(108px, 22vw), 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .card {
       position: relative;
       width: 100%;
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 5 / 4;
       border: 0;
       border-radius: var(--radius);
       padding: 0;
@@ -565,6 +565,40 @@
       }
     }
 
+    .card-deco {
+      cursor: default;
+    }
+
+    .card-deco .deco-content {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, #f2b66d, #c97d28);
+      border: 2px solid rgba(246, 223, 182, 0.7);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.1em;
+    }
+
+    .deco-year {
+      font-size: clamp(1.8rem, 4.5vw, 3rem);
+      font-weight: 900;
+      color: #2a1a08;
+      line-height: 1;
+      text-shadow: 0 2px 6px rgba(255, 255, 255, 0.28);
+    }
+
+    .deco-sub {
+      font-size: clamp(0.6rem, 1.5vw, 0.85rem);
+      font-weight: 800;
+      color: #3d200a;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
     .combo-alert {
       position: fixed;
       top: 45%;
@@ -611,18 +645,13 @@
 
       <div class="controls">
         <button id="newGame" type="button">Tentar de Novo</button>
-        <span class="pill" aria-live="polite">Tabuleiro fixo <b id="fixedPairs">12 pares</b></span>
+        <span class="pill" aria-live="polite">Tabuleiro fixo <b id="fixedPairs">6 pares</b></span>
       </div>
     </div>
 
     <section id="board" class="board" aria-label="memory board"></section>
 
     <p id="winText" class="win" aria-live="polite"></p>
-
-    <p class="footer-note">
-      Dica: edita o objeto <strong>captions</strong> neste ficheiro para personalizar o texto de cada memória.<br>
-      Quanto mais jogos jogares, mais fotos novas vais ver.
-    </p>
   </main>
 
   <div id="overlay" class="overlay" aria-hidden="true">
@@ -778,7 +807,7 @@
     const fixedPairsEl = document.getElementById("fixedPairs");
     const comboAlertEl = document.getElementById("comboAlert");
 
-    const FIXED_PAIR_COUNT = 8;
+    const FIXED_PAIR_COUNT = 6;
     let pairCount = FIXED_PAIR_COUNT;
     let cards = [];
     let firstCard = null;
@@ -1061,14 +1090,21 @@
     }
 
     function updateGridDensity() {
-      const width = Math.max(window.innerWidth, 320);
-      if (width < 540) {
-        board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
-      } else if (width < 850) {
-        board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
-      } else {
-        board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
-      }
+      board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
+    }
+
+    function createDecorativeCard(delayMs) {
+      const card = document.createElement("div");
+      card.className = "card card-deco";
+      card.style.animationDelay = `${delayMs}ms`;
+      card.setAttribute("aria-hidden", "true");
+      card.innerHTML = `
+        <span class="deco-content">
+          <span class="deco-year">29</span>
+          <span class="deco-sub">Anos</span>
+        </span>
+      `;
+      return card;
     }
 
     function createCard(fileName, uniqueId, delayMs) {
@@ -1135,7 +1171,7 @@
         if (matches === pairCount) {
           stopTimer();
           const elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
-          winText.textContent = `Completaste o modo 29 anos em ${moves} jogadas, ${formatTime(elapsedSeconds)}, com ${score} pontos!`;
+          winText.innerHTML = `Completaste o modo 29 anos em ${moves} jogadas, ${formatTime(elapsedSeconds)}, com ${score} pontos!<br><span style="font-size:0.88em;opacity:0.78">Quanto mais jogos jogares, mais fotos novas vais ver.</span>`;
           setTimeout(showGallery, 700);
         }
         return;

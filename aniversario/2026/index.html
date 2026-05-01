@@ -229,7 +229,7 @@
       z-index: 1;
       position: relative;
       display: grid;
-      gap: clamp(0.45rem, 1.4vw, 0.8rem);
+      gap: clamp(0.4rem, 2vw, 0.8rem);
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
@@ -550,18 +550,46 @@
       }
     }
 
-    @media (max-width: 680px) {
-      .page {
-        padding-top: 1rem;
+    @media (max-width: 860px) {
+      .board {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 540px) {
+      .board {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card {
+        aspect-ratio: 3 / 4;
+      }
+
+        padding-top: 0.6rem;
+      }
+
+      .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .status {
+        justify-content: center;
       }
 
       .controls {
+        justify-content: center;
         gap: 0.5rem;
       }
 
       button {
         padding: 0.58rem 0.95rem;
         font-size: 0.9rem;
+      }
+
+      .prize-track {
+        flex-wrap: wrap;
+        justify-content: center;
       }
     }
 
@@ -1090,7 +1118,14 @@
     }
 
     function updateGridDensity() {
-      board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
+      const w = window.innerWidth;
+      if (w <= 540) {
+        board.style.gridTemplateColumns = "repeat(2, minmax(0, 1fr))";
+      } else if (w <= 860) {
+        board.style.gridTemplateColumns = "repeat(3, minmax(0, 1fr))";
+      } else {
+        board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
+      }
     }
 
     function createDecorativeCard(delayMs) {

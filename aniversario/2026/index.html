@@ -373,8 +373,9 @@
 
     .music-prompt {
       position: fixed;
-      right: 1rem;
-      bottom: 1rem;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       width: min(340px, calc(100vw - 1.2rem));
       padding: 0.75rem;
       border-radius: 14px;
@@ -649,8 +650,9 @@
       }
 
       .music-prompt {
-        right: 0.45rem;
-        bottom: 0.45rem;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         width: min(320px, calc(100vw - 0.9rem));
       }
     }
@@ -744,7 +746,7 @@
     <p id="winText" class="win" aria-live="polite"></p>
 
     <footer class="site-footer" aria-label="Música">
-      <h4>Trilha do Jogo</h4>
+      <h4>Playlist do Jogo</h4>
       <p>Dá ao play para curtir a ronda com música.</p>
       <iframe
         class="spotify-embed"
@@ -921,8 +923,6 @@
     const musicPromptEl = document.getElementById("musicPrompt");
     const musicPlayBtn = document.getElementById("musicPlayBtn");
     const musicLaterBtn = document.getElementById("musicLaterBtn");
-
-    const MUSIC_PROMPT_SEEN_KEY = "anniv-2026-music-prompt-seen";
 
     const FIXED_PAIR_COUNT = 6;
     let pairCount = FIXED_PAIR_COUNT;
@@ -1329,22 +1329,6 @@
       startTimer();
     }
 
-    function markMusicPromptSeen() {
-      try {
-        localStorage.setItem(MUSIC_PROMPT_SEEN_KEY, "1");
-      } catch {
-        // Ignore storage failures (private mode/restricted browsers).
-      }
-    }
-
-    function shouldShowMusicPrompt() {
-      try {
-        return localStorage.getItem(MUSIC_PROMPT_SEEN_KEY) !== "1";
-      } catch {
-        return true;
-      }
-    }
-
     function hideMusicPrompt() {
       if (musicPromptEl) {
         musicPromptEl.hidden = true;
@@ -1371,7 +1355,6 @@
     function setupFirstVisitMusicPrompt() {
       if (musicPlayBtn) {
         musicPlayBtn.addEventListener("click", () => {
-          markMusicPromptSeen();
           hideMusicPrompt();
           enableSpotifyPlaybackHint();
         });
@@ -1379,14 +1362,11 @@
 
       if (musicLaterBtn) {
         musicLaterBtn.addEventListener("click", () => {
-          markMusicPromptSeen();
           hideMusicPrompt();
         });
       }
 
-      if (shouldShowMusicPrompt()) {
-        showMusicPrompt();
-      }
+      showMusicPrompt();
     }
 
     newGameBtn.addEventListener("click", startGame);

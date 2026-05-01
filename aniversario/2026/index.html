@@ -321,6 +321,10 @@
       cursor: default;
     }
 
+    .card.matched.game-over {
+      cursor: zoom-in;
+    }
+
     .card.matched .back {
       box-shadow:
         0 0 0 2px rgba(143, 214, 180, 0.6),
@@ -1189,13 +1193,20 @@
       }
     }
 
-    function showGallery(winMsg) {
+    function showGallery(winMsg, startIndex) {
       if (!currentRoundImages.length) return;
-      galleryIndex = 0;
+      // Use provided startIndex (from card click) or reset to 0 on fresh open.
+      if (startIndex !== undefined) {
+        galleryIndex = startIndex;
+      } else if (winMsg !== undefined) {
+        galleryIndex = 0;
+      }
       renderGallerySlide();
       if (winMsg) {
         galleryWinMsg.innerHTML = winMsg;
         galleryWinMsg.style.display = "block";
+      } else if (winMsg === undefined) {
+        // Called from card click — keep whatever message is already showing.
       } else {
         galleryWinMsg.style.display = "none";
       }
@@ -1270,7 +1281,15 @@
       const card = event.currentTarget;
       if (lockBoard) return;
       if (card === firstCard) return;
-      if (card.classList.contains("matched")) return;
+      if (card.classList.contains("matched")) {
+        // After the game is won, clicking a matched card opens the gallery at that image.
+        if (matches === pairCount) {
+          const fileName = card.dataset.name;
+          const idx = currentRoundImages.indexOf(fileName);
+          showGallery(undefined, idx !== -1 ? idx : 0);
+        }
+        return;
+      }
 
       card.classList.add("flipped");
 
@@ -1315,6 +1334,8 @@
           const elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
           const winMsg = `Completaste o modo 29 anos em ${moves} jogadas, ${formatTime(elapsedSeconds)}, com ${score} pontos!<span class="hint">Quanto mais jogos jogares, mais fotos novas vais ver.</span>`;
           winText.innerHTML = winMsg;
+          // Mark all matched cards so they show the zoom cursor.
+          board.querySelectorAll(".card.matched").forEach(c => c.classList.add("game-over"));
           setTimeout(() => showGallery(winMsg), 700);
         }
         return;

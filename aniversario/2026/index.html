@@ -727,6 +727,275 @@
       }
     }
 
+    /* ── Mobile phones (≤ 480 px) ─────────────────────────────────── */
+    @media (max-width: 480px) {
+      /* Page */
+      .page {
+        width: 100%;
+        padding: 0.55rem 0.4rem 1.4rem;
+      }
+
+      /* Top bar: stack sections vertically */
+      .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.45rem;
+        margin-bottom: 0.55rem;
+      }
+
+      /* Prize strip: horizontal scroll so all tiers are reachable */
+      .prize-strip {
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .prize-track {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 0.15rem;
+        justify-content: flex-start;
+        padding-bottom: 0.15rem;
+      }
+
+      .prize-track::-webkit-scrollbar {
+        display: none;
+      }
+
+      .prize-tier {
+        flex-shrink: 0;
+        padding: 0.12rem 0.28rem;
+      }
+
+      .prize-tier .icon {
+        font-size: 1.25rem;
+      }
+
+      .prize-tier .name {
+        font-size: 0.6rem;
+      }
+
+      .prize-tier .threshold {
+        font-size: 0.56rem;
+      }
+
+      .prize-arrow {
+        font-size: 0.68rem;
+        flex-shrink: 0;
+      }
+
+      /* Status pills: tight 3-column grid */
+      .status {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.28rem;
+        width: 100%;
+      }
+
+      .pill {
+        padding: 0.32rem 0.35rem;
+        font-size: 0.72rem;
+        border-radius: 8px;
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      .pill b {
+        font-size: 0.8rem;
+        margin-left: 0.12rem;
+        display: block;
+      }
+
+      /* Controls: full width, items stretch evenly */
+      .controls {
+        width: 100%;
+        justify-content: space-between;
+        gap: 0.35rem;
+      }
+
+      .controls > button {
+        flex: 1 1 0;
+        padding: 0.55rem 0.5rem;
+        font-size: 0.8rem;
+        text-align: center;
+      }
+
+      .controls > .pill {
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
+
+      /* Header */
+      .header {
+        margin-bottom: 0.6rem;
+      }
+
+      h1 {
+        font-size: clamp(1.4rem, 6.5vw, 2rem);
+      }
+
+      /* Board: 3 columns gives comfortably tappable cards */
+      .board {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 0.28rem;
+      }
+
+      /* Card front emoji */
+      .front {
+        font-size: clamp(1rem, 5.5vw, 1.5rem);
+      }
+
+      /* Decorative card */
+      .deco-year {
+        font-size: clamp(1.3rem, 6vw, 2.2rem);
+      }
+
+      .deco-sub {
+        font-size: clamp(0.5rem, 1.8vw, 0.75rem);
+      }
+
+      /* Spotlight overlay */
+      .spotlight {
+        width: calc(100vw - 0.8rem);
+        border-radius: 12px;
+      }
+
+      .spotlight-image {
+        max-height: min(48vh, 260px);
+      }
+
+      .spotlight-image img {
+        max-height: min(48vh, 260px);
+      }
+
+      .spotlight-text {
+        padding: 0.65rem 0.75rem 0.8rem;
+      }
+
+      .spotlight-title {
+        font-size: clamp(0.98rem, 4.5vw, 1.2rem);
+      }
+
+      .spotlight-caption {
+        font-size: 0.86rem;
+        margin-top: 0.3rem;
+      }
+
+      /* Gallery overlay */
+      .gallery {
+        width: calc(100vw - 0.8rem);
+        border-radius: 12px;
+      }
+
+      .gallery-stage {
+        min-height: min(40vh, 240px);
+      }
+
+      .gallery-stage img {
+        max-height: min(40vh, 240px);
+      }
+
+      .gallery-head {
+        padding: 0.6rem 2.6rem 0.55rem 0.75rem;
+      }
+
+      .gallery-head h3 {
+        font-size: 0.95rem;
+      }
+
+      .gallery-head p {
+        font-size: 0.8rem;
+      }
+
+      .gallery-foot {
+        padding: 0.55rem 0.75rem 0.7rem;
+        font-size: 0.86rem;
+      }
+
+      /* Slider buttons: large enough touch target */
+      .slider-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+      }
+
+      .slider-btn.prev { left: 0.3rem; }
+      .slider-btn.next { right: 0.3rem; }
+
+      /* Prize modal */
+      .prize-modal {
+        width: calc(100vw - 0.8rem);
+        padding: 0.75rem 0.75rem 0.7rem;
+      }
+
+      .prize-modal h3 {
+        font-size: clamp(1rem, 4.5vw, 1.25rem);
+      }
+
+      .prize-modal .subtitle {
+        font-size: 0.85rem;
+      }
+
+      .prize-item {
+        padding: 0.42rem 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .prize-actions {
+        margin-top: 0.65rem;
+      }
+
+      /* Close button */
+      .close {
+        width: 40px;
+        height: 40px;
+        font-size: 1.15rem;
+      }
+
+      /* Win text */
+      .win {
+        font-size: 0.83rem;
+        margin-top: 0.45rem;
+      }
+
+      /* Site footer */
+      .site-footer {
+        margin-top: 0.8rem;
+        padding: 0.6rem;
+      }
+
+      .site-footer h4 {
+        font-size: 0.78rem;
+      }
+
+      .site-footer p {
+        font-size: 0.73rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .spotify-embed {
+        height: 80px;
+        border-radius: 8px;
+      }
+
+      /* Footer note */
+      .footer-note {
+        font-size: 0.78rem;
+      }
+
+      /* Music prompt */
+      .music-prompt p {
+        font-size: 0.82rem;
+      }
+
+      /* Combo alert */
+      .combo-alert {
+        font-size: clamp(1.05rem, 5.5vw, 1.5rem);
+      }
+    }
+
     .card-deco {
       cursor: default;
     }
@@ -1409,7 +1678,8 @@
     }
 
     function updateGridDensity() {
-      board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
+      const cols = window.innerWidth <= 480 ? 3 : 4;
+      board.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
     }
 
     function createDecorativeCard(delayMs) {

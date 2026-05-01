@@ -76,7 +76,7 @@
     }
 
     .prize-strip {
-      flex: 1 1 100%;
+      flex: 1 1 auto;
       min-width: 0;
     }
 
@@ -167,15 +167,6 @@
       font-size: clamp(0.92rem, 2.1vw, 1.06rem);
     }
 
-    .status-row {
-      flex: 1 1 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      flex-wrap: nowrap;
-    }
-
     .status {
       z-index: 1;
       position: relative;
@@ -183,8 +174,7 @@
       flex-wrap: wrap;
       gap: 0.45rem;
       align-items: center;
-      flex: 1 1 0;
-      min-width: 0;
+      flex-shrink: 0;
     }
 
     .pill {
@@ -208,9 +198,9 @@
       position: relative;
       display: flex;
       gap: 0.55rem;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       align-items: center;
-      flex: 0 0 auto;
+      flex-shrink: 0;
     }
 
     button {
@@ -239,7 +229,7 @@
       z-index: 1;
       position: relative;
       display: grid;
-      gap: clamp(0.4rem, 2vw, 0.8rem);
+      gap: clamp(0.45rem, 1.4vw, 0.8rem);
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
@@ -331,10 +321,6 @@
       cursor: default;
     }
 
-    .card.matched.game-over {
-      cursor: zoom-in;
-    }
-
     .card.matched .back {
       box-shadow:
         0 0 0 2px rgba(143, 214, 180, 0.6),
@@ -349,6 +335,81 @@
       font-size: 0.92rem;
       z-index: 1;
       position: relative;
+    }
+
+    .site-footer {
+      margin-top: 1.2rem;
+      padding: 0.85rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(180deg, rgba(14, 20, 33, 0.72), rgba(10, 14, 24, 0.74));
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+      z-index: 1;
+      position: relative;
+    }
+
+    .site-footer h4 {
+      margin: 0 0 0.3rem;
+      font-size: 0.93rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #b8ccb9;
+      font-weight: 700;
+    }
+
+    .site-footer p {
+      margin: 0 0 0.65rem;
+      color: var(--ink-muted);
+      font-size: 0.85rem;
+    }
+
+    .spotify-embed {
+      width: 100%;
+      height: 152px;
+      border: 0;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .music-prompt {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      width: min(340px, calc(100vw - 1.2rem));
+      padding: 0.75rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: linear-gradient(180deg, rgba(13, 19, 31, 0.95), rgba(9, 13, 23, 0.95));
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+      z-index: 8;
+      animation: dropIn 320ms ease-out;
+    }
+
+    .music-prompt p {
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .music-prompt-actions {
+      margin-top: 0.65rem;
+      display: flex;
+      gap: 0.48rem;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .music-prompt .music-later {
+      color: #e4dccf;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(0, 0, 0, 0.14));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: none;
+    }
+
+    .music-prompt[hidden] {
+      display: none;
     }
 
     .overlay {
@@ -398,36 +459,6 @@
       object-fit: contain;
       display: block;
       margin: 0 auto;
-      pointer-events: none;
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-user-drag: none;
-    }
-
-    .spotlight-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.45rem 0.7rem 0;
-    }
-
-    .spotlight-nav-btn {
-      background: rgba(20,18,14,0.72);
-      color: #f8f0e3;
-      border: none;
-      border-radius: 999px;
-      width: 36px;
-      height: 36px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-    }
-
-    .spotlight-nav-counter {
-      font-size: 0.88rem;
-      color: #6a5a3a;
-      font-weight: 700;
     }
 
     .spotlight-text {
@@ -490,7 +521,7 @@
     }
 
     .gallery-head {
-      padding: 0.78rem 3.2rem 0.78rem 1rem;
+      padding: 0.78rem 3.2rem 0.68rem 1rem;
       border-bottom: 1px solid rgba(49, 35, 15, 0.15);
       background: linear-gradient(180deg, rgba(242, 196, 125, 0.35), rgba(255, 255, 255, 0));
     }
@@ -504,22 +535,6 @@
       margin: 0.2rem 0 0;
       color: #5a4a30;
       font-size: 0.9rem;
-    }
-
-    .gallery-win-msg {
-      margin-top: 0.55rem;
-      font-size: clamp(0.88rem, 2.2vw, 0.96rem);
-      line-height: 1.5;
-      color: #3a2e18;
-      font-weight: 700;
-    }
-
-    .gallery-win-msg .hint {
-      display: block;
-      margin-top: 0.18rem;
-      font-size: 0.88em;
-      font-weight: 400;
-      opacity: 0.72;
     }
 
     .gallery-stage {
@@ -536,20 +551,6 @@
       display: block;
       object-fit: contain;
       margin: 0 auto;
-      pointer-events: none;
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-user-drag: none;
-      cursor: zoom-in;
-    }
-
-    .gallery-stage {
-      position: relative;
-      background: #111;
-      min-height: min(56vh, 460px);
-      display: grid;
-      place-items: center;
-      cursor: zoom-in;
     }
 
     .slider-btn {
@@ -582,10 +583,6 @@
       text-align: center;
       color: #4a3e29;
       font-size: 0.95rem;
-    }
-
-    .gallery-win-msg {
-      display: none; /* kept for JS compat, actual display is in gallery-head now */
     }
 
     .counter {
@@ -628,38 +625,13 @@
       }
     }
 
-    @media (max-width: 860px) {
-      .board {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 540px) {
-      .board {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .card {
-        aspect-ratio: 3 / 4;
-      }
-
+    @media (max-width: 680px) {
       .page {
-        padding-top: 0.6rem;
-      }
-
-      .status-row {
-        flex-wrap: wrap;
-      }
-
-      .status {
-        justify-content: center;
-        flex: 1 1 100%;
+        padding-top: 1rem;
       }
 
       .controls {
-        justify-content: center;
         gap: 0.5rem;
-        flex: 1 1 100%;
       }
 
       button {
@@ -667,9 +639,19 @@
         font-size: 0.9rem;
       }
 
-      .prize-track {
-        flex-wrap: wrap;
-        justify-content: center;
+      .site-footer {
+        margin-top: 1rem;
+        padding: 0.72rem;
+      }
+
+      .spotify-embed {
+        height: 152px;
+      }
+
+      .music-prompt {
+        right: 0.45rem;
+        bottom: 0.45rem;
+        width: min(320px, calc(100vw - 0.9rem));
       }
     }
 
@@ -743,37 +725,42 @@
         <div id="prizeTrack" class="prize-track"></div>
       </section>
 
-      <div class="status-row">
-        <section class="status" aria-label="Estado do jogo">
-          <div class="pill">Jogadas <b id="moves">0</b></div>
-          <div class="pill">Pares <b id="pairs">0</b></div>
-          <div class="pill">Tempo <b id="timer">00:00</b></div>
-          <div class="pill">Pontos <b id="score">0</b></div>
-          <div class="pill">Prémio <b id="currentPrize">Nenhum</b></div>
-        </section>
+      <section class="status" aria-label="Estado do jogo">
+        <div class="pill">Jogadas <b id="moves">0</b></div>
+        <div class="pill">Pares <b id="pairs">0</b></div>
+        <div class="pill">Tempo <b id="timer">00:00</b></div>
+        <div class="pill">Pontos <b id="score">0</b></div>
+        <div class="pill">Prémio <b id="currentPrize">Nenhum</b></div>
+      </section>
 
-        <div class="controls">
-          <button id="newGame" type="button">Tentar de Novo</button>
-          <span class="pill" aria-live="polite">Tabuleiro fixo <b id="fixedPairs">6 pares</b></span>
-        </div>
+      <div class="controls">
+        <button id="newGame" type="button">Tentar de Novo</button>
+        <span class="pill" aria-live="polite">Tabuleiro fixo <b id="fixedPairs">6 pares</b></span>
       </div>
     </div>
 
     <section id="board" class="board" aria-label="memory board"></section>
 
     <p id="winText" class="win" aria-live="polite"></p>
+
+    <footer class="site-footer" aria-label="Música">
+      <h4>Trilha do Jogo</h4>
+      <p>Dá ao play para curtir a ronda com música.</p>
+      <iframe
+        class="spotify-embed"
+        src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator"
+        title="Spotify playlist"
+        loading="lazy"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+      </iframe>
+    </footer>
   </main>
 
   <div id="overlay" class="overlay" aria-hidden="true">
     <article class="spotlight" role="dialog" aria-modal="true" aria-labelledby="spotlightTitle">
       <button id="closeOverlay" class="close" aria-label="Fechar destaque">x</button>
       <div class="spotlight-image">
-        <img id="spotlightImage" alt="Matched memory" draggable="false" oncontextmenu="return false" />
-      </div>
-      <div class="spotlight-nav" id="spotlightNav" style="display:none">
-        <button id="spotlightPrev" class="spotlight-nav-btn" aria-label="Imagem anterior">&lt;</button>
-        <span id="spotlightNavCounter" class="spotlight-nav-counter"></span>
-        <button id="spotlightNext" class="spotlight-nav-btn" aria-label="Próxima imagem">&gt;</button>
+        <img id="spotlightImage" alt="Matched memory" />
       </div>
       <div class="spotlight-text">
         <h2 id="spotlightTitle" class="spotlight-title">Memória Desbloqueada</h2>
@@ -788,12 +775,11 @@
       <header class="gallery-head">
         <h3 id="galleryTitle">Memórias da Ronda</h3>
         <p>Todas as fotos usadas neste jogo</p>
-        <div id="galleryWinMsg" class="gallery-win-msg" style="display:none"></div>
       </header>
-      <section class="gallery-stage" id="galleryStage">
-        <button id="prevSlide" class="slider-btn prev" aria-label="Imagem anterior">&lt;</button>
-        <img id="galleryImage" alt="Memória da ronda" draggable="false" oncontextmenu="return false" />
-        <button id="nextSlide" class="slider-btn next" aria-label="Próxima imagem">&gt;</button>
+      <section class="gallery-stage">
+        <button id="prevSlide" class="slider-btn prev" aria-label="Imagem anterior"><</button>
+        <img id="galleryImage" alt="Memória da ronda" />
+        <button id="nextSlide" class="slider-btn next" aria-label="Próxima imagem">></button>
       </section>
       <footer class="gallery-foot">
         <span id="galleryCounter" class="counter">1 / 1</span>
@@ -803,6 +789,14 @@
   </div>
 
   <div id="comboAlert" class="combo-alert" aria-live="assertive"></div>
+
+  <aside id="musicPrompt" class="music-prompt" aria-label="Sugestão de música" hidden>
+    <p>Queres jogar com música? Dá play na playlist.</p>
+    <div class="music-prompt-actions">
+      <button id="musicPlayBtn" type="button">Tocar</button>
+      <button id="musicLaterBtn" type="button" class="music-later">Agora não</button>
+    </div>
+  </aside>
 
   <script>
     const availableImages = [
@@ -872,6 +866,7 @@
       "IMG_20260501_145144.jpg",
       "IMG_20260501_145216.jpg",
       "IMG_20260501_145251.jpg",
+      "IMG_20260501_145337.jpg",
       "IMG_20260501_145610.jpg",
       "IMG_20260501_145620.jpg",
       "IMG_20260501_145629.jpg",
@@ -893,89 +888,9 @@
 
     // Personaliza estes textos com as tuas histórias.
     const captions = {
-      "IMG_20260501_142348.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142406.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142416.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142426.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142435.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142506.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142513.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142527.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142529.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142539.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142556.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142637.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142645.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142710.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142729.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142734.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142742.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142750.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142820.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142830.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142841.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142854.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142917.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142923.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_142955.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143000.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143009.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143015.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143027.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143034.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143053.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143109.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143113.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143127.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143247.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143335.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143339.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143342.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143347.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143354.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143437.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143458.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143522.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143657.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143813.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143816.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143824.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_143850.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144022.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144052.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144232.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144243.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144356.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144542.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144653.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144732.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144758.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144819.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144837.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144856.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144902.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_144917.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_145015.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_145144.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_145216.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_145251.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_145610.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_145620.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_145629.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_145636.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_145712.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_145936.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_150012.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_150126.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_150132.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_150150.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_150211.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_150222.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_150240.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_150454.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_150609.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_150616.jpg": "📝 Descrição aqui...",
-      "IMG_20260501_150646.jpg": "📝 Descrição aqui...",
+      "IMG_20260501_142348.jpg": "O início de um capítulo inesquecível.",
+      "IMG_20260501_142406.jpg": "Um momento que ainda faz toda a gente sorrir.",
+      "IMG_20260501_142416.jpg": "A celebrar dedicação, crescimento e amizade.",
       "default": "Mais uma memória preciosa dos nossos 29 anos de história."
     };
 
@@ -991,10 +906,6 @@
     const spotlightImage = document.getElementById("spotlightImage");
     const spotlightCaption = document.getElementById("spotlightCaption");
     const closeOverlay = document.getElementById("closeOverlay");
-    const spotlightNav = document.getElementById("spotlightNav");
-    const spotlightPrev = document.getElementById("spotlightPrev");
-    const spotlightNext = document.getElementById("spotlightNext");
-    const spotlightNavCounter = document.getElementById("spotlightNavCounter");
     const galleryOverlay = document.getElementById("galleryOverlay");
     const closeGallery = document.getElementById("closeGallery");
     const prevSlide = document.getElementById("prevSlide");
@@ -1002,10 +913,16 @@
     const galleryImage = document.getElementById("galleryImage");
     const galleryCounter = document.getElementById("galleryCounter");
     const galleryCaption = document.getElementById("galleryCaption");
-    const galleryWinMsg = document.getElementById("galleryWinMsg");
     const newGameBtn = document.getElementById("newGame");
     const fixedPairsEl = document.getElementById("fixedPairs");
     const comboAlertEl = document.getElementById("comboAlert");
+    const spotifyEmbedEl = document.querySelector(".spotify-embed");
+    const siteFooterEl = document.querySelector(".site-footer");
+    const musicPromptEl = document.getElementById("musicPrompt");
+    const musicPlayBtn = document.getElementById("musicPlayBtn");
+    const musicLaterBtn = document.getElementById("musicLaterBtn");
+
+    const MUSIC_PROMPT_SEEN_KEY = "anniv-2026-music-prompt-seen";
 
     const FIXED_PAIR_COUNT = 6;
     let pairCount = FIXED_PAIR_COUNT;
@@ -1021,7 +938,6 @@
     let lastTimePenaltyMark = 0;
     let currentRoundImages = [];
     let galleryIndex = 0;
-    let spotlightGalleryMode = false; // true when opened from gallery click
     let highestUnlockedTierIndex = -1;
     let remainingImagePool = [];
     let matchAudioContext = null;
@@ -1040,17 +956,14 @@
       timePenaltyEverySeconds: 5
     };
 
-    // Férias is always shown but threshold is intentionally impossible to reach.
-    const ALL_PRIZE_TIERS = [
-      { code: "A", name: "Abraço",   icon: "🤗", threshold: 20    },
-      { code: "B", name: "Beijinho", icon: "😘", threshold: 50    },
-      { code: "C", name: "Café",     icon: "☕", threshold: 80    },
-      { code: "D", name: "Cerveja",  icon: "🍺", threshold: 140   }, // only after 16:00
-      { code: "E", name: "Bolo",     icon: "🎂", threshold: 210   }, // only after 16:00, near-perfect play
-      { code: "F", name: "Dia de Férias pago pela empresa", icon: "🏝️", threshold: 99999 }, // never reachable
+    const prizeTiers = [
+      { code: "A", name: "Abraço", icon: "🤗", threshold: 30 },
+      { code: "B", name: "Beijinho", icon: "😘", threshold: 80 },
+      { code: "C", name: "Café", icon: "☕", threshold: 140 },
+      { code: "D", name: "Cerveja", icon: "🍺", threshold: 210 },
+      { code: "E", name: "Bolo", icon: "🎂", threshold: 290 },
+      { code: "F", name: "Dia de Férias pago pela empresa", icon: "🏝️", threshold: 999 }
     ];
-    const CAFE_GUARANTEE = 80; // minimum prize a completed game always grants
-    let prizeTiers = [];
 
     function shuffle(arr) {
       const clone = [...arr];
@@ -1248,21 +1161,9 @@
       return captions[fileName] || captions.default || "Memory unlocked!";
     }
 
-    function showSpotlight(fileName, galleryMode = false) {
-      spotlightGalleryMode = galleryMode;
-      if (galleryMode) {
-        // sync spotlight index to current gallery index
-        spotlightImage.src = `./game_images/${currentRoundImages[galleryIndex]}`;
-        spotlightCaption.textContent = getCaption(currentRoundImages[galleryIndex]);
-        spotlightNavCounter.textContent = `${galleryIndex + 1} / ${currentRoundImages.length}`;
-        spotlightNav.style.display = "flex";
-        spotlightTitle.textContent = "Memórias da Ronda";
-      } else {
-        spotlightImage.src = `./game_images/${fileName}`;
-        spotlightCaption.textContent = getCaption(fileName);
-        spotlightNav.style.display = "none";
-        spotlightTitle.textContent = "Memória Desbloqueada";
-      }
+    function showSpotlight(fileName) {
+      spotlightImage.src = `./game_images/${fileName}`;
+      spotlightCaption.textContent = getCaption(fileName);
       overlay.classList.add("active");
       overlay.setAttribute("aria-hidden", "false");
     }
@@ -1278,31 +1179,12 @@
       galleryImage.src = `./game_images/${fileName}`;
       galleryCaption.textContent = getCaption(fileName);
       galleryCounter.textContent = `${galleryIndex + 1} / ${currentRoundImages.length}`;
-      // keep spotlight in sync if open in gallery mode
-      if (spotlightGalleryMode && overlay.classList.contains("active")) {
-        spotlightImage.src = `./game_images/${fileName}`;
-        spotlightCaption.textContent = getCaption(fileName);
-        spotlightNavCounter.textContent = `${galleryIndex + 1} / ${currentRoundImages.length}`;
-      }
     }
 
-    function showGallery(winMsg, startIndex) {
+    function showGallery() {
       if (!currentRoundImages.length) return;
-      // Use provided startIndex (from card click) or reset to 0 on fresh open.
-      if (startIndex !== undefined) {
-        galleryIndex = startIndex;
-      } else if (winMsg !== undefined) {
-        galleryIndex = 0;
-      }
+      galleryIndex = 0;
       renderGallerySlide();
-      if (winMsg) {
-        galleryWinMsg.innerHTML = winMsg;
-        galleryWinMsg.style.display = "block";
-      } else if (winMsg === undefined) {
-        // Called from card click — keep whatever message is already showing.
-      } else {
-        galleryWinMsg.style.display = "none";
-      }
       galleryOverlay.classList.add("active");
       galleryOverlay.setAttribute("aria-hidden", "false");
     }
@@ -1325,14 +1207,7 @@
     }
 
     function updateGridDensity() {
-      const w = window.innerWidth;
-      if (w <= 540) {
-        board.style.gridTemplateColumns = "repeat(2, minmax(0, 1fr))";
-      } else if (w <= 860) {
-        board.style.gridTemplateColumns = "repeat(3, minmax(0, 1fr))";
-      } else {
-        board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
-      }
+      board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
     }
 
     function createDecorativeCard(delayMs) {
@@ -1374,15 +1249,7 @@
       const card = event.currentTarget;
       if (lockBoard) return;
       if (card === firstCard) return;
-      if (card.classList.contains("matched")) {
-        // After the game is won, clicking a matched card opens the gallery at that image.
-        if (matches === pairCount) {
-          const fileName = card.dataset.name;
-          const idx = currentRoundImages.indexOf(fileName);
-          showGallery(undefined, idx !== -1 ? idx : 0);
-        }
-        return;
-      }
+      if (card.classList.contains("matched")) return;
 
       card.classList.add("flipped");
 
@@ -1420,16 +1287,9 @@
 
         if (matches === pairCount) {
           stopTimer();
-          // Guarantee at least Café for every completed game.
-          if (score < CAFE_GUARANTEE) {
-            adjustScore(CAFE_GUARANTEE - score);
-          }
           const elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
-          const winMsg = `Completaste o modo 29 anos em ${moves} jogadas, ${formatTime(elapsedSeconds)}, com ${score} pontos!<span class="hint">Quanto mais jogos jogares, mais fotos novas vais ver.</span>`;
-          winText.innerHTML = winMsg;
-          // Mark all matched cards so they show the zoom cursor.
-          board.querySelectorAll(".card.matched").forEach(c => c.classList.add("game-over"));
-          setTimeout(() => showGallery(winMsg), 700);
+          winText.innerHTML = `Completaste o modo 29 anos em ${moves} jogadas, ${formatTime(elapsedSeconds)}, com ${score} pontos!<br><span style="font-size:0.88em;opacity:0.78">Quanto mais jogos jogares, mais fotos novas vais ver.</span>`;
+          setTimeout(showGallery, 700);
         }
         return;
       }
@@ -1461,12 +1321,6 @@
     function startGame() {
       pairCount = FIXED_PAIR_COUNT;
       fixedPairsEl.textContent = `${FIXED_PAIR_COUNT} pares`;
-      // Build the active tier list based on time of day.
-      // Before 16:00 → max is Café. From 16:00 onwards Cerveja and Bolo are unlockable.
-      // Férias (index 5) is always appended — visible but threshold is 99999, never reachable.
-      const gameHour = new Date().getHours();
-      const unlockable = gameHour >= 16 ? ALL_PRIZE_TIERS.slice(0, 5) : ALL_PRIZE_TIERS.slice(0, 3);
-      prizeTiers = [...unlockable, ALL_PRIZE_TIERS[5]];
       renderPrizeTrack();
       resetState();
       hideSpotlight();
@@ -1475,32 +1329,72 @@
       startTimer();
     }
 
+    function markMusicPromptSeen() {
+      try {
+        localStorage.setItem(MUSIC_PROMPT_SEEN_KEY, "1");
+      } catch {
+        // Ignore storage failures (private mode/restricted browsers).
+      }
+    }
+
+    function shouldShowMusicPrompt() {
+      try {
+        return localStorage.getItem(MUSIC_PROMPT_SEEN_KEY) !== "1";
+      } catch {
+        return true;
+      }
+    }
+
+    function hideMusicPrompt() {
+      if (musicPromptEl) {
+        musicPromptEl.hidden = true;
+      }
+    }
+
+    function showMusicPrompt() {
+      if (musicPromptEl) {
+        musicPromptEl.hidden = false;
+      }
+    }
+
+    function enableSpotifyPlaybackHint() {
+      if (!spotifyEmbedEl) return;
+      if (!spotifyEmbedEl.src.includes("autoplay=1")) {
+        const joiner = spotifyEmbedEl.src.includes("?") ? "&" : "?";
+        spotifyEmbedEl.src = `${spotifyEmbedEl.src}${joiner}autoplay=1`;
+      }
+      if (siteFooterEl) {
+        siteFooterEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+
+    function setupFirstVisitMusicPrompt() {
+      if (musicPlayBtn) {
+        musicPlayBtn.addEventListener("click", () => {
+          markMusicPromptSeen();
+          hideMusicPrompt();
+          enableSpotifyPlaybackHint();
+        });
+      }
+
+      if (musicLaterBtn) {
+        musicLaterBtn.addEventListener("click", () => {
+          markMusicPromptSeen();
+          hideMusicPrompt();
+        });
+      }
+
+      if (shouldShowMusicPrompt()) {
+        showMusicPrompt();
+      }
+    }
+
     newGameBtn.addEventListener("click", startGame);
 
     closeOverlay.addEventListener("click", hideSpotlight);
     closeGallery.addEventListener("click", hideGallery);
     nextSlide.addEventListener("click", nextGallerySlide);
     prevSlide.addEventListener("click", prevGallerySlide);
-
-    // Spotlight nav (gallery mode)
-    spotlightPrev.addEventListener("click", () => { prevGallerySlide(); });
-    spotlightNext.addEventListener("click", () => { nextGallerySlide(); });
-
-    // Click gallery image to open in spotlight zoom
-    document.getElementById("galleryStage").addEventListener("click", (e) => {
-      if (e.target.closest(".slider-btn")) return;
-      showSpotlight(null, true);
-    });
-
-    // Global right-click block on images
-    document.addEventListener("contextmenu", (e) => {
-      if (e.target.tagName === "IMG") e.preventDefault();
-    });
-
-    // Block drag on images
-    document.addEventListener("dragstart", (e) => {
-      if (e.target.tagName === "IMG") e.preventDefault();
-    });
 
     overlay.addEventListener("click", (event) => {
       if (event.target === overlay) hideSpotlight();
@@ -1523,6 +1417,7 @@
 
     refillImagePool();
     startGame();
+    setupFirstVisitMusicPrompt();
   </script>
 </body>
 </html>

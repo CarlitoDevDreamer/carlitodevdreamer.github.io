@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>29 Years Memory Match</title>
+  <title>Jogo da Memória - 29 Anos</title>
   <style>
     :root {
       --bg-deep: #12161f;
@@ -571,21 +571,21 @@
 
   <main class="page">
     <div class="top-bar">
-      <section class="prize-strip" aria-label="Prize ladder">
+      <section class="prize-strip" aria-label="Escala de prémios">
         <div id="prizeTrack" class="prize-track"></div>
       </section>
 
-      <section class="status" aria-label="game status">
-        <div class="pill">Moves <b id="moves">0</b></div>
-        <div class="pill">Matches <b id="pairs">0</b></div>
-        <div class="pill">Time <b id="timer">00:00</b></div>
-        <div class="pill">Score <b id="score">0</b></div>
-        <div class="pill">Prize <b id="currentPrize">None</b></div>
+      <section class="status" aria-label="Estado do jogo">
+        <div class="pill">Jogadas <b id="moves">0</b></div>
+        <div class="pill">Pares <b id="pairs">0</b></div>
+        <div class="pill">Tempo <b id="timer">00:00</b></div>
+        <div class="pill">Pontos <b id="score">0</b></div>
+        <div class="pill">Prémio <b id="currentPrize">Nenhum</b></div>
       </section>
 
       <div class="controls">
-        <button id="newGame" type="button">Tenta de Novo</button>
-        <span class="pill" aria-live="polite">Fixed board <b id="fixedPairs">12 pairs</b></span>
+        <button id="newGame" type="button">Tentar de Novo</button>
+        <span class="pill" aria-live="polite">Tabuleiro fixo <b id="fixedPairs">12 pares</b></span>
       </div>
     </div>
 
@@ -594,18 +594,18 @@
     <p id="winText" class="win" aria-live="polite"></p>
 
     <p class="footer-note">
-      Tip: edit the <strong>captions</strong> object in this file to customize each photo memory text.
+      Dica: edita o objeto <strong>captions</strong> neste ficheiro para personalizar o texto de cada memória.
     </p>
   </main>
 
   <div id="overlay" class="overlay" aria-hidden="true">
     <article class="spotlight" role="dialog" aria-modal="true" aria-labelledby="spotlightTitle">
-      <button id="closeOverlay" class="close" aria-label="Close spotlight">x</button>
+      <button id="closeOverlay" class="close" aria-label="Fechar destaque">x</button>
       <div class="spotlight-image">
         <img id="spotlightImage" alt="Matched memory" />
       </div>
       <div class="spotlight-text">
-        <h2 id="spotlightTitle" class="spotlight-title">Memory Unlocked</h2>
+        <h2 id="spotlightTitle" class="spotlight-title">Memória Desbloqueada</h2>
         <p id="spotlightCaption" class="spotlight-caption"></p>
       </div>
     </article>
@@ -613,15 +613,15 @@
 
   <div id="galleryOverlay" class="overlay" aria-hidden="true">
     <article class="gallery" role="dialog" aria-modal="true" aria-labelledby="galleryTitle">
-      <button id="closeGallery" class="close" aria-label="Close gallery">x</button>
+      <button id="closeGallery" class="close" aria-label="Fechar galeria">x</button>
       <header class="gallery-head">
-        <h3 id="galleryTitle">Round Memories</h3>
-        <p>All photos used in this game board</p>
+        <h3 id="galleryTitle">Memórias da Ronda</h3>
+        <p>Todas as fotos usadas neste jogo</p>
       </header>
       <section class="gallery-stage">
-        <button id="prevSlide" class="slider-btn prev" aria-label="Previous image"><</button>
-        <img id="galleryImage" alt="Round memory image" />
-        <button id="nextSlide" class="slider-btn next" aria-label="Next image">></button>
+        <button id="prevSlide" class="slider-btn prev" aria-label="Imagem anterior"><</button>
+        <img id="galleryImage" alt="Memória da ronda" />
+        <button id="nextSlide" class="slider-btn next" aria-label="Próxima imagem">></button>
       </section>
       <footer class="gallery-foot">
         <span id="galleryCounter" class="counter">1 / 1</span>
@@ -718,12 +718,12 @@
       "IMG_20260501_150646.jpg"
     ];
 
-    // Customize these texts with your own stories.
+    // Personaliza estes textos com as tuas histórias.
     const captions = {
-      "IMG_20260501_142348.jpg": "The beginning of an unforgettable chapter.",
-      "IMG_20260501_142406.jpg": "A moment that still makes everyone smile.",
-      "IMG_20260501_142416.jpg": "Celebrating dedication, growth, and friendship.",
-      "default": "Another treasured memory from our 29-year journey."
+      "IMG_20260501_142348.jpg": "O início de um capítulo inesquecível.",
+      "IMG_20260501_142406.jpg": "Um momento que ainda faz toda a gente sorrir.",
+      "IMG_20260501_142416.jpg": "A celebrar dedicação, crescimento e amizade.",
+      "default": "Mais uma memória preciosa dos nossos 29 anos de história."
     };
 
     const board = document.getElementById("board");
@@ -893,7 +893,7 @@
       movesEl.textContent = String(moves);
       pairsEl.textContent = String(matches);
       scoreEl.textContent = String(score);
-      currentPrizeEl.textContent = "None";
+      currentPrizeEl.textContent = "Nenhum";
       winText.textContent = "";
       updatePrizeProgress();
     }
@@ -952,6 +952,8 @@
           if (tier) currentLabel = tier.name;
         }
       });
+
+      if (highestUnlockedTierIndex < 0) currentLabel = "Nenhum";
 
       if (highestUnlockedTierIndex >= 0) {
         const currentCode = prizeTiers[highestUnlockedTierIndex].code;
@@ -1034,7 +1036,7 @@
         <span class="inner">
           <span class="face front" aria-hidden="true"></span>
           <span class="face back">
-            <img src="./game_images/${fileName}" alt="Memory card" loading="lazy" />
+            <img src="./game_images/${fileName}" alt="Carta de memória" loading="lazy" />
           </span>
         </span>
       `;
@@ -1079,7 +1081,7 @@
         if (matches === pairCount) {
           stopTimer();
           const elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
-          winText.textContent = `You completed 29 years mode in ${moves} moves, ${formatTime(elapsedSeconds)}, score ${score}.`;
+          winText.textContent = `Completaste o modo 29 anos em ${moves} jogadas, ${formatTime(elapsedSeconds)}, com ${score} pontos!`;
           setTimeout(showGallery, 700);
         }
         return;
@@ -1108,7 +1110,7 @@
 
     function startGame() {
       pairCount = FIXED_PAIR_COUNT;
-      fixedPairsEl.textContent = `${FIXED_PAIR_COUNT} pairs`;
+      fixedPairsEl.textContent = `${FIXED_PAIR_COUNT} pares`;
       renderPrizeTrack();
       resetState();
       hideSpotlight();

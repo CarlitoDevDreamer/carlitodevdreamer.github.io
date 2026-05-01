@@ -68,11 +68,7 @@
       z-index: 1;
       position: relative;
       margin: 0 0 1rem;
-      padding: 0.72rem 0.6rem;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.18));
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      padding: 0.55rem 0.4rem;
     }
 
     .prize-title {
@@ -94,44 +90,44 @@
     }
 
     .prize-tier {
-      min-width: 108px;
-      border-radius: 10px;
-      border: 1px dashed rgba(246, 223, 182, 0.48);
-      padding: 0.36rem 0.5rem;
-      background: rgba(20, 26, 38, 0.52);
-      display: grid;
-      gap: 0.1rem;
-      place-items: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.04rem;
+      padding: 0.22rem 0.5rem;
       transition: 180ms ease;
+      opacity: 0.38;
+      filter: grayscale(1);
     }
 
-    .prize-tier .code {
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: #f4d8ac;
-      letter-spacing: 0.08em;
+    .prize-tier .icon {
+      font-size: 1.9rem;
+      line-height: 1;
     }
 
     .prize-tier .name {
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
+      font-weight: 700;
       line-height: 1.2;
       color: #e8dfcf;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
     .prize-tier .threshold {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: #bcaf94;
     }
 
     .prize-tier.unlocked {
-      border-color: rgba(143, 214, 180, 0.9);
-      background: linear-gradient(180deg, rgba(143, 214, 180, 0.24), rgba(27, 46, 36, 0.58));
+      opacity: 1;
+      filter: none;
     }
 
     .prize-tier.current {
-      transform: translateY(-2px);
-      box-shadow: 0 0 0 2px rgba(143, 214, 180, 0.42), 0 8px 18px rgba(0, 0, 0, 0.32);
+      transform: translateY(-3px);
+      filter: drop-shadow(0 0 8px rgba(143, 214, 180, 0.65));
     }
 
     .prize-arrow {
@@ -577,7 +573,7 @@
     </section>
 
     <div class="controls">
-      <button id="newGame" type="button">New Game</button>
+      <button id="newGame" type="button">Tenta de Novo</button>
       <span class="pill" aria-live="polite">Fixed board <b id="fixedPairs">12 pairs</b></span>
     </div>
 
@@ -766,12 +762,12 @@
     };
 
     const prizeTiers = [
-      { code: "A", name: "Hug", threshold: 30 },
-      { code: "B", name: "Kiss", threshold: 80 },
-      { code: "C", name: "Coffe", threshold: 140 },
-      { code: "D", name: "Beer", threshold: 210 },
-      { code: "E", name: "Cake", threshold: 290 },
-      { code: "F", name: "Dia de Férias pago pela empresa", threshold: 999 }
+      { code: "A", name: "Abraço", icon: "🤗", threshold: 30 },
+      { code: "B", name: "Beijinho", icon: "😘", threshold: 80 },
+      { code: "C", name: "Café", icon: "☕", threshold: 140 },
+      { code: "D", name: "Cerveja", icon: "🍺", threshold: 210 },
+      { code: "E", name: "Bolo", icon: "🎂", threshold: 290 },
+      { code: "F", name: "Dia de Férias pago pela empresa", icon: "🏝️", threshold: 999 }
     ];
 
     function shuffle(arr) {
@@ -898,8 +894,9 @@
         el.className = "prize-tier";
         el.setAttribute("data-code", tier.code);
         el.setAttribute("data-threshold", String(tier.threshold));
+        el.setAttribute("data-icon", tier.icon);
         el.innerHTML = `
-          <span class="code">${tier.code}</span>
+          <span class="icon">${tier.icon}</span>
           <span class="name">${tier.name}</span>
           <span class="threshold">${tier.threshold}+ pts</span>
         `;
@@ -934,14 +931,13 @@
       highestUnlockedTierIndex = Math.max(highestUnlockedTierIndex, scoreTierIndex);
 
       tierElements.forEach((el, index) => {
-        const threshold = Number(el.getAttribute("data-threshold"));
         const code = el.getAttribute("data-code");
         const unlocked = index <= highestUnlockedTierIndex;
         el.classList.toggle("unlocked", unlocked);
         el.classList.remove("current");
         if (unlocked) {
           const tier = prizeTiers.find((p) => p.code === code);
-          if (tier) currentLabel = `${tier.code} - ${tier.name}`;
+          if (tier) currentLabel = tier.name;
         }
       });
 

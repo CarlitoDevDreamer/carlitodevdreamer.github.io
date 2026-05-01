@@ -564,6 +564,32 @@
         font-size: 0.9rem;
       }
     }
+
+    .combo-alert {
+      position: fixed;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      z-index: 10;
+      font-size: clamp(1.3rem, 4vw, 1.9rem);
+      font-weight: 800;
+      color: var(--accent-2);
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.75);
+      pointer-events: none;
+      opacity: 0;
+      white-space: nowrap;
+    }
+
+    .combo-alert.pop {
+      animation: comboPop 900ms ease forwards;
+    }
+
+    @keyframes comboPop {
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+      20%  { opacity: 1; transform: translate(-50%, -50%) scale(1.18); }
+      55%  { opacity: 1; transform: translate(-50%, -50%) scale(1);    }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+    }
   </style>
 </head>
 <body>
@@ -594,7 +620,8 @@
     <p id="winText" class="win" aria-live="polite"></p>
 
     <p class="footer-note">
-      Dica: edita o objeto <strong>captions</strong> neste ficheiro para personalizar o texto de cada memória.
+      Dica: edita o objeto <strong>captions</strong> neste ficheiro para personalizar o texto de cada memória.<br>
+      Quanto mais jogos jogares, mais fotos novas vais ver.
     </p>
   </main>
 
@@ -629,6 +656,8 @@
       </footer>
     </article>
   </div>
+
+  <div id="comboAlert" class="combo-alert" aria-live="assertive"></div>
 
   <script>
     const availableImages = [
@@ -747,8 +776,9 @@
     const galleryCaption = document.getElementById("galleryCaption");
     const newGameBtn = document.getElementById("newGame");
     const fixedPairsEl = document.getElementById("fixedPairs");
+    const comboAlertEl = document.getElementById("comboAlert");
 
-    const FIXED_PAIR_COUNT = 12;
+    const FIXED_PAIR_COUNT = 8;
     let pairCount = FIXED_PAIR_COUNT;
     let cards = [];
     let firstCard = null;
@@ -765,10 +795,17 @@
     let highestUnlockedTierIndex = -1;
     let remainingImagePool = [];
     let matchAudioContext = null;
+    let matchStreak = 0;
+    let missStreak = 0;
 
+    // Scoring: base reward + combo bonus per consecutive match.
+    // Miss penalty grows with consecutive misses and resets the match streak.
     const scoreRules = {
-      matchReward: 30,
-      missPenalty: 9,
+      baseMatchReward: 25,
+      comboBonus: 10,       // extra pts per consecutive match (capped at 5 steps)
+      maxComboSteps: 5,
+      missPenaltyBase: 10,
+      missPenaltyPerStreak: 5, // extra penalty per consecutive miss
       timePenalty: 1,
       timePenaltyEverySeconds: 5
     };
@@ -858,6 +895,14 @@
       }
     }
 
+    function showComboAlert(text) {
+      comboAlertEl.textContent = text;
+      comboAlertEl.classList.remove("pop");
+      // Force reflow so the animation restarts cleanly on every call.
+      void comboAlertEl.offsetWidth;
+      comboAlertEl.classList.add("pop");
+    }
+
     function startTimer() {
       clearInterval(timerId);
       startTimestamp = Date.now();
@@ -890,6 +935,8 @@
       matches = 0;
       score = 0;
       highestUnlockedTierIndex = -1;
+      matchStreak = 0;
+      missStreak = 0;
       movesEl.textContent = String(moves);
       pairsEl.textContent = String(matches);
       scoreEl.textContent = String(score);
@@ -1016,11 +1063,11 @@
     function updateGridDensity() {
       const width = Math.max(window.innerWidth, 320);
       if (width < 540) {
-        board.style.gridTemplateColumns = "repeat(3, minmax(0, 1fr))";
+        board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
       } else if (width < 850) {
         board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
       } else {
-        board.style.gridTemplateColumns = `repeat(${Math.min(6, Math.ceil(Math.sqrt(pairCount * 2)))}, minmax(0, 1fr))`;
+        board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
       }
     }
 
@@ -1067,7 +1114,14 @@
         firstCard.classList.add("matched");
         secondCard.classList.add("matched");
         playMatchSound();
-        adjustScore(scoreRules.matchReward);
+        matchStreak++;
+        missStreak = 0;
+        const comboSteps = Math.min(matchStreak - 1, scoreRules.maxComboSteps);
+        const matchReward = scoreRules.baseMatchReward + comboSteps * scoreRules.comboBonus;
+        adjustScore(matchReward);
+        if (matchStreak >= 2) {
+          showComboAlert(`🔥 x${matchStreak} Combo! +${matchReward}`);
+        }
 
         matches += 1;
         pairsEl.textContent = String(matches);
@@ -1088,7 +1142,10 @@
       }
 
       lockBoard = true;
-      adjustScore(-scoreRules.missPenalty);
+      missStreak++;
+      matchStreak = 0;
+      const missPenalty = scoreRules.missPenaltyBase + (missStreak - 1) * scoreRules.missPenaltyPerStreak;
+      adjustScore(-missPenalty);
       setTimeout(() => {
         firstCard.classList.remove("flipped");
         secondCard.classList.remove("flipped");

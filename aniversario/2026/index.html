@@ -321,6 +321,10 @@
       cursor: default;
     }
 
+    .card.matched.game-over {
+      cursor: zoom-in;
+    }
+
     .card.matched .back {
       box-shadow:
         0 0 0 2px rgba(143, 214, 180, 0.6),
@@ -1180,9 +1184,14 @@
       galleryCounter.textContent = `${galleryIndex + 1} / ${currentRoundImages.length}`;
     }
 
-    function showGallery() {
+    function showGallery(startIndex) {
       if (!currentRoundImages.length) return;
-      galleryIndex = 0;
+      if (startIndex !== undefined) {
+        const maxIndex = currentRoundImages.length - 1;
+        galleryIndex = Math.max(0, Math.min(startIndex, maxIndex));
+      } else {
+        galleryIndex = 0;
+      }
       renderGallerySlide();
       galleryOverlay.classList.add("active");
       galleryOverlay.setAttribute("aria-hidden", "false");
@@ -1248,7 +1257,14 @@
       const card = event.currentTarget;
       if (lockBoard) return;
       if (card === firstCard) return;
-      if (card.classList.contains("matched")) return;
+      if (card.classList.contains("matched")) {
+        if (matches === pairCount) {
+          const fileName = card.dataset.name;
+          const index = currentRoundImages.indexOf(fileName);
+          showGallery(index !== -1 ? index : 0);
+        }
+        return;
+      }
 
       card.classList.add("flipped");
 
@@ -1288,6 +1304,7 @@
           stopTimer();
           const elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
           winText.innerHTML = `Completaste o modo 29 anos em ${moves} jogadas, ${formatTime(elapsedSeconds)}, com ${score} pontos!<br><span style="font-size:0.88em;opacity:0.78">Quanto mais jogos jogares, mais fotos novas vais ver.</span>`;
+          board.querySelectorAll(".card.matched").forEach((el) => el.classList.add("game-over"));
           setTimeout(showGallery, 700);
         }
         return;

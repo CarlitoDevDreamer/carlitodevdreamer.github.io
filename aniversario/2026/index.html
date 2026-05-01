@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -741,17 +741,17 @@
       </div>
     </div>
 
-    <section id="board" class="board" aria-label="memory board"></section>
+    <section id="board" class="board" aria-label="Tabuleiro de memória"></section>
 
     <p id="winText" class="win" aria-live="polite"></p>
 
     <footer class="site-footer" aria-label="Música">
-      <h4>Playlist do Jogo</h4>
-      <p>Dá ao play para curtir a ronda com música.</p>
+      <h4>Playlist do Jogo (Hits de 1997 a 2026)</h4>
+      <p>Carrega em reproduzir para ouvir música durante a ronda.</p>
       <iframe
         class="spotify-embed"
         src="https://open.spotify.com/embed/playlist/54KmG0AvJZxcVlW3bnQR5p?utm_source=generator"
-        title="Spotify playlist"
+        title="Playlist do Spotify"
         loading="lazy"
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
       </iframe>
@@ -762,7 +762,7 @@
     <article class="spotlight" role="dialog" aria-modal="true" aria-labelledby="spotlightTitle">
       <button id="closeOverlay" class="close" aria-label="Fechar destaque">x</button>
       <div class="spotlight-image">
-        <img id="spotlightImage" alt="Matched memory" />
+        <img id="spotlightImage" alt="Memória encontrada" />
       </div>
       <div class="spotlight-text">
         <h2 id="spotlightTitle" class="spotlight-title">Memória Desbloqueada</h2>
@@ -793,7 +793,7 @@
   <div id="comboAlert" class="combo-alert" aria-live="assertive"></div>
 
   <aside id="musicPrompt" class="music-prompt" aria-label="Sugestão de música" hidden>
-    <p>Queres jogar com música? Dá play na playlist.</p>
+    <p>Queres jogar com música? Carrega em reproduzir na playlist.</p>
     <div class="music-prompt-actions">
       <button id="musicPlayBtn" type="button">Tocar</button>
       <button id="musicLaterBtn" type="button" class="music-later">Agora não</button>
@@ -868,7 +868,6 @@
       "IMG_20260501_145144.jpg",
       "IMG_20260501_145216.jpg",
       "IMG_20260501_145251.jpg",
-      "IMG_20260501_145337.jpg",
       "IMG_20260501_145610.jpg",
       "IMG_20260501_145620.jpg",
       "IMG_20260501_145629.jpg",
@@ -1124,7 +1123,7 @@
 
     function updatePrizeProgress() {
       const tierElements = prizeTrack.querySelectorAll(".prize-tier");
-      let currentLabel = "None";
+      let currentLabel = "Nenhum";
       let scoreTierIndex = -1;
 
       for (let i = 0; i < prizeTiers.length; i++) {
@@ -1158,7 +1157,7 @@
     }
 
     function getCaption(fileName) {
-      return captions[fileName] || captions.default || "Memory unlocked!";
+      return captions[fileName] || captions.default || "Memória desbloqueada!";
     }
 
     function showSpotlight(fileName) {

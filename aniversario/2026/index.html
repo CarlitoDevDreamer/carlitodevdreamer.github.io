@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>29 Years Memory Match</title>
+  <style>
+    :root {
+      --bg-deep: #12161f;
+      --bg-soft: #1f2636;
+      --card: #243047;
+      --ink: #f7efe2;
+      --ink-muted: #d9cbb2;
+      --accent: #f2b66d;
+      --accent-2: #8fd6b4;
+      --danger: #f27f7f;
+      --radius: 14px;
+      --shadow: 0 14px 40px rgba(0, 0, 0, 0.38);
+      --frame: #f6dfb6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Trebuchet MS", "Verdana", sans-serif;
+      background:
+        radial-gradient(circle at 8% 10%, rgba(242, 182, 109, 0.16), transparent 38%),
+        radial-gradient(circle at 85% 5%, rgba(143, 214, 180, 0.18), transparent 30%),
+        radial-gradient(circle at 50% 120%, rgba(242, 182, 109, 0.2), transparent 40%),
+        linear-gradient(140deg, var(--bg-deep), #171d2a 52%, #0f131b);
+      color: var(--ink);
+    }
+
+    .page {
+      width: min(1200px, 94vw);
+      margin: 0 auto;
+      padding: 1.3rem 0.2rem 2rem;
+      position: relative;
+    }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.12;
+      mix-blend-mode: soft-light;
+      background-image:
+        repeating-radial-gradient(circle at 25% 25%, #fff 0 1px, transparent 1px 3px),
+        repeating-radial-gradient(circle at 75% 75%, #fff 0 1px, transparent 1px 4px);
+      background-size: 180px 180px, 210px 210px;
+      z-index: 0;
+    }
+
+    .header {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      margin-bottom: 1.2rem;
+      animation: dropIn 700ms ease-out both;
+    }
+
+    .kicker {
+      color: var(--accent-2);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 0.77rem;
+    }
+
+    h1 {
+      margin: 0.45rem 0 0.2rem;
+      font-size: clamp(1.8rem, 4.2vw, 2.9rem);
+      line-height: 1.06;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.45);
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: clamp(0.92rem, 2.1vw, 1.06rem);
+    }
+
+    .status {
+      z-index: 1;
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.55rem;
+      margin: 1rem 0 1.1rem;
+    }
+
+    .pill {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.14));
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      padding: 0.5rem 0.7rem;
+      text-align: center;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      font-size: 0.9rem;
+    }
+
+    .pill b {
+      color: var(--accent);
+      font-size: 1rem;
+      margin-left: 0.26rem;
+    }
+
+    .controls {
+      z-index: 1;
+      position: relative;
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 999px;
+      color: #182026;
+      background: linear-gradient(180deg, #f8d7a8, #efb35d);
+      padding: 0.63rem 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      box-shadow: 0 7px 20px rgba(0, 0, 0, 0.28);
+      transition: transform 140ms ease, filter 140ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.04);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .board {
+      z-index: 1;
+      position: relative;
+      display: grid;
+      gap: clamp(0.45rem, 1.4vw, 0.8rem);
+      grid-template-columns: repeat(auto-fit, minmax(min(108px, 22vw), 1fr));
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 0;
+      border-radius: var(--radius);
+      padding: 0;
+      background: none;
+      perspective: 900px;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: cardIn 380ms ease forwards;
+    }
+
+    .inner {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform 360ms ease;
+    }
+
+    .card.flipped .inner,
+    .card.matched .inner {
+      transform: rotateY(180deg);
+    }
+
+    .face {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      backface-visibility: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .front {
+      background: linear-gradient(180deg, #2a3a56, #233149);
+      border: 2px solid rgba(246, 223, 182, 0.35);
+      display: grid;
+      place-items: center;
+      color: #f9dbad;
+      font-size: clamp(1.2rem, 4.8vw, 2.05rem);
+      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+      position: relative;
+    }
+
+    .front::before,
+    .front::after {
+      content: "";
+      position: absolute;
+      width: 38%;
+      height: 38%;
+      border: 2px solid rgba(246, 223, 182, 0.5);
+      border-radius: 50%;
+      filter: blur(0.2px);
+    }
+
+    .front::before {
+      top: 9%;
+      left: 7%;
+      transform: rotate(-18deg);
+    }
+
+    .front::after {
+      right: 8%;
+      bottom: 8%;
+      transform: rotate(17deg);
+    }
+
+    .back {
+      transform: rotateY(180deg);
+      border: 3px solid var(--frame);
+      background: #111;
+    }
+
+    .back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(1.03) contrast(1.03);
+    }
+
+    .card.matched {
+      cursor: default;
+    }
+
+    .card.matched .back {
+      box-shadow:
+        0 0 0 2px rgba(143, 214, 180, 0.6),
+        0 0 18px rgba(143, 214, 180, 0.32),
+        var(--shadow);
+    }
+
+    .footer-note {
+      margin-top: 1rem;
+      text-align: center;
+      color: var(--ink-muted);
+      font-size: 0.92rem;
+      z-index: 1;
+      position: relative;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 9, 15, 0.72);
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+      z-index: 4;
+      padding: 1rem;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .spotlight {
+      background: linear-gradient(180deg, #fff9ef, #f3dfbd);
+      width: min(700px, 96vw);
+      color: #2a2214;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 54px rgba(0, 0, 0, 0.42);
+      transform: scale(0.94);
+      opacity: 0;
+    }
+
+    .overlay.active .spotlight {
+      animation: spotlightZoom 1100ms ease forwards;
+    }
+
+    .spotlight-image {
+      position: relative;
+      background: #111;
+      border-bottom: 4px solid #e8c98f;
+      max-height: min(58vh, 460px);
+    }
+
+    .spotlight-image img {
+      width: 100%;
+      height: auto;
+      max-height: min(58vh, 460px);
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .spotlight-text {
+      padding: 1rem 1rem 1.1rem;
+      text-align: center;
+    }
+
+    .spotlight-title {
+      margin: 0;
+      font-size: clamp(1.1rem, 3.2vw, 1.45rem);
+      line-height: 1.15;
+    }
+
+    .spotlight-caption {
+      margin: 0.55rem 0 0;
+      font-size: clamp(0.95rem, 2.5vw, 1.03rem);
+      line-height: 1.4;
+      color: #4a3e29;
+    }
+
+    .close {
+      position: absolute;
+      top: 0.48rem;
+      right: 0.48rem;
+      z-index: 5;
+      background: rgba(20, 18, 14, 0.8);
+      color: #f8f0e3;
+      border-radius: 999px;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .win {
+      margin-top: 0.7rem;
+      color: var(--accent-2);
+      font-weight: 700;
+      text-align: center;
+      min-height: 1.35rem;
+    }
+
+    @keyframes cardIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes dropIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes spotlightZoom {
+      0% {
+        opacity: 0;
+        transform: scale(0.86);
+      }
+      35% {
+        opacity: 1;
+      }
+      55% {
+        transform: scale(1.055);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .page {
+        padding-top: 1rem;
+      }
+
+      .controls {
+        gap: 0.5rem;
+      }
+
+      button {
+        padding: 0.58rem 0.95rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <main class="page">
+    <header class="header">
+      <p class="kicker">29 years celebration</p>
+      <h1>Nostalgic Memory Match</h1>
+      <p class="subtitle">Find matching photo pairs and unlock a memory highlight.</p>
+    </header>
+
+    <section class="status" aria-label="game status">
+      <div class="pill">Moves <b id="moves">0</b></div>
+      <div class="pill">Matches <b id="pairs">0</b></div>
+      <div class="pill">Time <b id="timer">00:00</b></div>
+    </section>
+
+    <div class="controls">
+      <button id="newGame" type="button">New Game</button>
+      <button id="fewerCards" type="button">8 Pairs</button>
+      <button id="moreCards" type="button">12 Pairs</button>
+    </div>
+
+    <section id="board" class="board" aria-label="memory board"></section>
+
+    <p id="winText" class="win" aria-live="polite"></p>
+
+    <p class="footer-note">
+      Tip: edit the <strong>captions</strong> object in this file to customize each photo memory text.
+    </p>
+  </main>
+
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <article class="spotlight" role="dialog" aria-modal="true" aria-labelledby="spotlightTitle">
+      <button id="closeOverlay" class="close" aria-label="Close spotlight">x</button>
+      <div class="spotlight-image">
+        <img id="spotlightImage" alt="Matched memory" />
+      </div>
+      <div class="spotlight-text">
+        <h2 id="spotlightTitle" class="spotlight-title">Memory Unlocked</h2>
+        <p id="spotlightCaption" class="spotlight-caption"></p>
+      </div>
+    </article>
+  </div>
+
+  <script>
+    const availableImages = [
+      "IMG_20260501_142348.jpg",
+      "IMG_20260501_142406.jpg",
+      "IMG_20260501_142416.jpg",
+      "IMG_20260501_142426.jpg",
+      "IMG_20260501_142435.jpg",
+      "IMG_20260501_142506.jpg",
+      "IMG_20260501_142513.jpg",
+      "IMG_20260501_142527.jpg",
+      "IMG_20260501_142529.jpg",
+      "IMG_20260501_142539.jpg",
+      "IMG_20260501_142556.jpg",
+      "IMG_20260501_142637.jpg",
+      "IMG_20260501_142645.jpg",
+      "IMG_20260501_142710.jpg",
+      "IMG_20260501_142729.jpg",
+      "IMG_20260501_142734.jpg",
+      "IMG_20260501_142742.jpg",
+      "IMG_20260501_142750.jpg",
+      "IMG_20260501_142820.jpg",
+      "IMG_20260501_142830.jpg",
+      "IMG_20260501_142841.jpg",
+      "IMG_20260501_142854.jpg",
+      "IMG_20260501_142917.jpg",
+      "IMG_20260501_142923.jpg",
+      "IMG_20260501_142955.jpg",
+      "IMG_20260501_143000.jpg",
+      "IMG_20260501_143009.jpg",
+      "IMG_20260501_143015.jpg",
+      "IMG_20260501_143027.jpg",
+      "IMG_20260501_143034.jpg",
+      "IMG_20260501_143053.jpg",
+      "IMG_20260501_143109.jpg",
+      "IMG_20260501_143113.jpg",
+      "IMG_20260501_143127.jpg",
+      "IMG_20260501_143247.jpg",
+      "IMG_20260501_143335.jpg",
+      "IMG_20260501_143339.jpg",
+      "IMG_20260501_143342.jpg",
+      "IMG_20260501_143347.jpg",
+      "IMG_20260501_143354.jpg",
+      "IMG_20260501_143437.jpg",
+      "IMG_20260501_143458.jpg",
+      "IMG_20260501_143522.jpg",
+      "IMG_20260501_143657.jpg",
+      "IMG_20260501_143813.jpg",
+      "IMG_20260501_143816.jpg",
+      "IMG_20260501_143824.jpg",
+      "IMG_20260501_143850.jpg",
+      "IMG_20260501_144022.jpg",
+      "IMG_20260501_144052.jpg",
+      "IMG_20260501_144232.jpg",
+      "IMG_20260501_144243.jpg",
+      "IMG_20260501_144356.jpg",
+      "IMG_20260501_144542.jpg",
+      "IMG_20260501_144653.jpg",
+      "IMG_20260501_144732.jpg",
+      "IMG_20260501_144758.jpg",
+      "IMG_20260501_144819.jpg",
+      "IMG_20260501_144837.jpg",
+      "IMG_20260501_144856.jpg",
+      "IMG_20260501_144902.jpg",
+      "IMG_20260501_144917.jpg",
+      "IMG_20260501_145015.jpg",
+      "IMG_20260501_145144.jpg",
+      "IMG_20260501_145216.jpg",
+      "IMG_20260501_145251.jpg",
+      "IMG_20260501_145337.jpg",
+      "IMG_20260501_145610.jpg",
+      "IMG_20260501_145620.jpg",
+      "IMG_20260501_145629.jpg",
+      "IMG_20260501_145636.jpg",
+      "IMG_20260501_145712.jpg",
+      "IMG_20260501_145936.jpg",
+      "IMG_20260501_150012.jpg",
+      "IMG_20260501_150126.jpg",
+      "IMG_20260501_150132.jpg",
+      "IMG_20260501_150150.jpg",
+      "IMG_20260501_150211.jpg",
+      "IMG_20260501_150222.jpg",
+      "IMG_20260501_150240.jpg",
+      "IMG_20260501_150454.jpg",
+      "IMG_20260501_150609.jpg",
+      "IMG_20260501_150616.jpg",
+      "IMG_20260501_150646.jpg"
+    ];
+
+    // Customize these texts with your own stories.
+    const captions = {
+      "IMG_20260501_142348.jpg": "The beginning of an unforgettable chapter.",
+      "IMG_20260501_142406.jpg": "A moment that still makes everyone smile.",
+      "IMG_20260501_142416.jpg": "Celebrating dedication, growth, and friendship.",
+      "default": "Another treasured memory from our 29-year journey."
+    };
+
+    const board = document.getElementById("board");
+    const movesEl = document.getElementById("moves");
+    const pairsEl = document.getElementById("pairs");
+    const timerEl = document.getElementById("timer");
+    const winText = document.getElementById("winText");
+    const overlay = document.getElementById("overlay");
+    const spotlightImage = document.getElementById("spotlightImage");
+    const spotlightCaption = document.getElementById("spotlightCaption");
+    const closeOverlay = document.getElementById("closeOverlay");
+    const newGameBtn = document.getElementById("newGame");
+    const fewerCardsBtn = document.getElementById("fewerCards");
+    const moreCardsBtn = document.getElementById("moreCards");
+
+    let pairCount = 10;
+    let cards = [];
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let moves = 0;
+    let matches = 0;
+    let startTimestamp = 0;
+    let timerId = null;
+
+    function shuffle(arr) {
+      const clone = [...arr];
+      for (let i = clone.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [clone[i], clone[j]] = [clone[j], clone[i]];
+      }
+      return clone;
+    }
+
+    function formatTime(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+      const seconds = Math.floor(totalSeconds % 60).toString().padStart(2, "0");
+      return `${minutes}:${seconds}`;
+    }
+
+    function startTimer() {
+      clearInterval(timerId);
+      startTimestamp = Date.now();
+      timerEl.textContent = "00:00";
+      timerId = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
+        timerEl.textContent = formatTime(elapsed);
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerId);
+    }
+
+    function resetState() {
+      firstCard = null;
+      secondCard = null;
+      lockBoard = false;
+      moves = 0;
+      matches = 0;
+      movesEl.textContent = String(moves);
+      pairsEl.textContent = String(matches);
+      winText.textContent = "";
+    }
+
+    function getCaption(fileName) {
+      return captions[fileName] || captions.default || "Memory unlocked!";
+    }
+
+    function showSpotlight(fileName) {
+      spotlightImage.src = `./game_images/${fileName}`;
+      spotlightCaption.textContent = getCaption(fileName);
+      overlay.classList.add("active");
+      overlay.setAttribute("aria-hidden", "false");
+    }
+
+    function hideSpotlight() {
+      overlay.classList.remove("active");
+      overlay.setAttribute("aria-hidden", "true");
+    }
+
+    function updateGridDensity() {
+      const width = Math.max(window.innerWidth, 320);
+      if (width < 540) {
+        board.style.gridTemplateColumns = "repeat(3, minmax(0, 1fr))";
+      } else if (width < 850) {
+        board.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
+      } else {
+        board.style.gridTemplateColumns = `repeat(${Math.min(6, Math.ceil(Math.sqrt(pairCount * 2)))}, minmax(0, 1fr))`;
+      }
+    }
+
+    function createCard(fileName, uniqueId, delayMs) {
+      const card = document.createElement("button");
+      card.className = "card";
+      card.type = "button";
+      card.setAttribute("data-name", fileName);
+      card.setAttribute("data-id", uniqueId);
+      card.style.animationDelay = `${delayMs}ms`;
+
+      card.innerHTML = `
+        <span class="inner">
+          <span class="face front" aria-hidden="true">29</span>
+          <span class="face back">
+            <img src="./game_images/${fileName}" alt="Memory card" loading="lazy" />
+          </span>
+        </span>
+      `;
+
+      card.addEventListener("click", onCardClick);
+      return card;
+    }
+
+    function onCardClick(event) {
+      const card = event.currentTarget;
+      if (lockBoard) return;
+      if (card === firstCard) return;
+      if (card.classList.contains("matched")) return;
+
+      card.classList.add("flipped");
+
+      if (!firstCard) {
+        firstCard = card;
+        return;
+      }
+
+      secondCard = card;
+      moves += 1;
+      movesEl.textContent = String(moves);
+
+      const isMatch = firstCard.dataset.name === secondCard.dataset.name;
+      if (isMatch) {
+        firstCard.classList.add("matched");
+        secondCard.classList.add("matched");
+
+        matches += 1;
+        pairsEl.textContent = String(matches);
+
+        const matchedName = firstCard.dataset.name;
+        setTimeout(() => showSpotlight(matchedName), 240);
+
+        firstCard = null;
+        secondCard = null;
+
+        if (matches === pairCount) {
+          stopTimer();
+          const elapsedSeconds = Math.floor((Date.now() - startTimestamp) / 1000);
+          winText.textContent = `You completed 29 years mode in ${moves} moves and ${formatTime(elapsedSeconds)}.`;
+        }
+        return;
+      }
+
+      lockBoard = true;
+      setTimeout(() => {
+        firstCard.classList.remove("flipped");
+        secondCard.classList.remove("flipped");
+        firstCard = null;
+        secondCard = null;
+        lockBoard = false;
+      }, 820);
+    }
+
+    function buildDeck() {
+      const chosen = shuffle(availableImages).slice(0, pairCount);
+      const deck = shuffle([...chosen, ...chosen]);
+
+      cards = deck.map((fileName, index) => createCard(fileName, `${fileName}-${index}`, index * 18));
+      board.replaceChildren(...cards);
+      updateGridDensity();
+    }
+
+    function startGame() {
+      resetState();
+      hideSpotlight();
+      buildDeck();
+      startTimer();
+    }
+
+    newGameBtn.addEventListener("click", startGame);
+    fewerCardsBtn.addEventListener("click", () => {
+      pairCount = 8;
+      startGame();
+    });
+    moreCardsBtn.addEventListener("click", () => {
+      pairCount = 12;
+      startGame();
+    });
+
+    closeOverlay.addEventListener("click", hideSpotlight);
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) hideSpotlight();
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") hideSpotlight();
+    });
+    window.addEventListener("resize", updateGridDensity);
+
+    startGame();
+  </script>
+</body>
+</html>

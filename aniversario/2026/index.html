@@ -76,7 +76,7 @@
     }
 
     .prize-strip {
-      flex: 1 1 auto;
+      flex: 1 1 100%;
       min-width: 0;
     }
 
@@ -167,6 +167,15 @@
       font-size: clamp(0.92rem, 2.1vw, 1.06rem);
     }
 
+    .status-row {
+      flex: 1 1 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: nowrap;
+    }
+
     .status {
       z-index: 1;
       position: relative;
@@ -174,7 +183,8 @@
       flex-wrap: wrap;
       gap: 0.45rem;
       align-items: center;
-      flex-shrink: 0;
+      flex: 1 1 0;
+      min-width: 0;
     }
 
     .pill {
@@ -198,9 +208,9 @@
       position: relative;
       display: flex;
       gap: 0.55rem;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       align-items: center;
-      flex-shrink: 0;
+      flex: 0 0 auto;
     }
 
     button {
@@ -633,21 +643,23 @@
         aspect-ratio: 3 / 4;
       }
 
+      .page {
         padding-top: 0.6rem;
       }
 
-      .top-bar {
-        flex-direction: column;
-        align-items: stretch;
+      .status-row {
+        flex-wrap: wrap;
       }
 
       .status {
         justify-content: center;
+        flex: 1 1 100%;
       }
 
       .controls {
         justify-content: center;
         gap: 0.5rem;
+        flex: 1 1 100%;
       }
 
       button {
@@ -731,17 +743,19 @@
         <div id="prizeTrack" class="prize-track"></div>
       </section>
 
-      <section class="status" aria-label="Estado do jogo">
-        <div class="pill">Jogadas <b id="moves">0</b></div>
-        <div class="pill">Pares <b id="pairs">0</b></div>
-        <div class="pill">Tempo <b id="timer">00:00</b></div>
-        <div class="pill">Pontos <b id="score">0</b></div>
-        <div class="pill">Prémio <b id="currentPrize">Nenhum</b></div>
-      </section>
+      <div class="status-row">
+        <section class="status" aria-label="Estado do jogo">
+          <div class="pill">Jogadas <b id="moves">0</b></div>
+          <div class="pill">Pares <b id="pairs">0</b></div>
+          <div class="pill">Tempo <b id="timer">00:00</b></div>
+          <div class="pill">Pontos <b id="score">0</b></div>
+          <div class="pill">Prémio <b id="currentPrize">Nenhum</b></div>
+        </section>
 
-      <div class="controls">
-        <button id="newGame" type="button">Tentar de Novo</button>
-        <span class="pill" aria-live="polite">Tabuleiro fixo <b id="fixedPairs">6 pares</b></span>
+        <div class="controls">
+          <button id="newGame" type="button">Tentar de Novo</button>
+          <span class="pill" aria-live="polite">Tabuleiro fixo <b id="fixedPairs">6 pares</b></span>
+        </div>
       </div>
     </div>
 
